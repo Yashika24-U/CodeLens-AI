@@ -1,0 +1,53 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:15
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: yashika
+      POSTGRES_PASSWORD: yashika
+      POSTGRES_DB: codereviewer
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    container_name: backend_app
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      DB_HOST: db
+      DB_USER: yashika
+      DB_PASSWORD: yashika
+      DB_NAME: codereviewer
+      DB_PORT: 5432
+    depends_on:
+      - db
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+    command: npm run start
+
+  frontend: # <--- MOVED IN: Must be under "services"
+    build:
+      context: ./frontend # <--- INDENTED: context must be under build
+      dockerfile: Dockerfile # <--- FIX: This should point to your file named 'Dockerfile'
+    container_name: frontend_app
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.vite
+    environment:
+      - VITE_API_URL=http://localhost:5000
+    depends_on:
+      - backend
+
+volumes: # <--- ADDED: You need this because you used it in the 'db' service
+  postgres_data:

@@ -1,0 +1,17 @@
+# Dependencies
+node_modules/
+.vite/
+
+# Environment / Secrets (CRITICAL)
+.env
+.env.local
+*.env
+
+# Build & Docker
+dist/
+postgres_data/
+.dockerignore_data/
+
+# OS/IDE junk
+.DS_Store
+.vscode/
