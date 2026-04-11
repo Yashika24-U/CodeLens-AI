@@ -26,11 +26,13 @@ services:
       DB_PASSWORD: yashika
       DB_NAME: codereviewer
       DB_PORT: 5432
+      NODE_ENV: development
     depends_on:
       - db
     volumes:
       - ./backend:/usr/src/app
       - /usr/src/app/node_modules
+      - ./backend:/app
     command: npm run start
 
   frontend: # <--- MOVED IN: Must be under "services"
