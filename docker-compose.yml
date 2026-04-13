@@ -31,7 +31,7 @@ services:
       - db
     volumes:
       - ./backend:/app
-      - /app/node_module
+      - /app/node_modules
     command: npm run dev
     env_file:
       - ./.env

@@ -2,11 +2,15 @@ const express = require("express");
 const db = require("./models");
 const app = express();
 const authRoutes = require("./routes/authRoutes");
+const userRoutes = require("./routes/userRoutes");
+
+app.use(express.json());
+// Auth Routes
+app.use("/api/auth", authRoutes);
+app.use("/api", userRoutes);
 
 app.get("/", (req, res) => res.send("Hello world!"));
 
-// Auth Routes
-app.use("/api/auth", authRoutes);
 const startServer = async () => {
   try {
     await db.sequelize.authenticate();
