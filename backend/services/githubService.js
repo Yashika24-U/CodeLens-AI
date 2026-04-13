@@ -1,7 +1,6 @@
 const axios = require("axios");
 require("dotenv").config();
 
-
 // exchangeCodeForToken
 exports.exchangeCodeForToken = async (code) => {
   const response = await axios.post(
@@ -19,7 +18,6 @@ exports.exchangeCodeForToken = async (code) => {
   return response.data.access_token;
 };
 
-
 // fetchGitHubProfile
 exports.fetchGitHubProfile = async (accessToken) => {
   const response = await axios.get(process.env.GITHUB_USER_URL, {
@@ -28,11 +26,10 @@ exports.fetchGitHubProfile = async (accessToken) => {
   return response.data;
 };
 
-
 // Get PullReq Diff
 exports.getPullRequestDiff = async (owner, repo, prNumber, token) => {
   try {
-    const response = axios.get(
+    const response = await axios.get(
       `https://api.github.com/repos/${owner}/${repo}/pulls/${prNumber}`,
       {
         headers: {

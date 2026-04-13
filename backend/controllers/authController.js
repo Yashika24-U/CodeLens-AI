@@ -34,7 +34,7 @@ exports.handleCallback = async (req, res) => {
 
     // 1. Exchange code for Access Token
     const accessToken = await githubService.exchangeCodeForToken(code);
-    
+
     // 2. Get User Profile using that token
     const profile = await githubService.fetchGitHubProfile(accessToken);
 

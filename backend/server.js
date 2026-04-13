@@ -2,7 +2,7 @@ const express = require("express");
 const db = require("./models");
 const app = express();
 const authRoutes = require("./routes/authRoutes");
-const userRoutes = require("./routes/userRoutes");
+const userRoutes = require("./routes/webhookRoutes");
 
 app.use(express.json());
 // Auth Routes
