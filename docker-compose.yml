@@ -30,15 +30,16 @@ services:
     depends_on:
       - db
     volumes:
-      - ./backend:/usr/src/app
-      - /usr/src/app/node_modules
       - ./backend:/app
-    command: npm run start
+      - /app/node_module
+    command: npm run dev
+    env_file:
+      - ./.env
 
-  frontend: # <--- MOVED IN: Must be under "services"
+  frontend:
     build:
-      context: ./frontend # <--- INDENTED: context must be under build
-      dockerfile: Dockerfile # <--- FIX: This should point to your file named 'Dockerfile'
+      context: ./frontend
+      dockerfile: Dockerfile
     container_name: frontend_app
     ports:
       - "5173:5173"

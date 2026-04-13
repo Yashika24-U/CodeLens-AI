@@ -1,38 +1,40 @@
 const githubService = require("../services/githubService");
 const { User } = require("../models"); // Assuming your index.js exports models
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
+require("dotenv").config();
 
 exports.initiateGitHubLogin = (req, res) => {
+  const state = crypto.randomBytes(16).toString("hex");
+  if (req.session) {
+    req.session.oauthState = state;
+  }
   const { GITHUB_CLIENT_ID, GITHUB_CALLBACK_URL } = process.env;
-
   // Basic guard clause
   if (!GITHUB_CLIENT_ID || !GITHUB_CALLBACK_URL) {
     return res.status(500).json({ error: "OAuth configuration missing" });
   }
-
-  const GITHUB_AUTH_URL = `https://github.com/login/oauth/authorize`;
-
+  const GITHUB_AUTH_URL = process.env.GITHUB_AUTH_URL;
   const params = new URLSearchParams({
     client_id: GITHUB_CLIENT_ID,
     redirect_uri: GITHUB_CALLBACK_URL,
     scope: "user:email repo",
-    state: req.session?.state || "temporary_state", // Example of dynamic state
+    state: state,
   });
-
   res.redirect(`${GITHUB_AUTH_URL}?${params.toString()}`);
 };
 
+// Handle callback
 exports.handleCallback = async (req, res) => {
   try {
     const { code } = req.query;
-
     if (!code) {
       return res.status(400).json({ error: "No code provided from GitHub" });
     }
 
     // 1. Exchange code for Access Token
     const accessToken = await githubService.exchangeCodeForToken(code);
-
+    
     // 2. Get User Profile using that token
     const profile = await githubService.fetchGitHubProfile(accessToken);
 
@@ -68,9 +70,10 @@ exports.handleCallback = async (req, res) => {
     });
 
     // 7. Redirect to Frontend
-    res.redirect("http://localhost:3000/dashboard");
+    res.redirect(process.env.FRONTEND_URL);
   } catch (error) {
     console.error("Auth Error:", error.message);
-    res.redirect("http://localhost:3000/login?error=auth_failed");
+    const errorUrl = `${process.env.FRONTEND_URL}/login?error=auth_failed`;
+    res.redirect(errorUrl);
   }
 };
