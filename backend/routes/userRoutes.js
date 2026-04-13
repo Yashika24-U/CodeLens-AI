@@ -2,7 +2,9 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
 const githubService = require("../services/githubService");
+// Checking the diff check-test
 
+// Need to move this part to controllers
 router.post("/github/webhook", async (req, res) => {
   const event = req.headers["x-github-event"];
   const { action, pull_request, repository } = req.body;
@@ -38,6 +40,8 @@ router.post("/github/webhook", async (req, res) => {
   }
   res.status(200).send("Processed");
 });
+
+// Checking the diff check-test
 
 //  https://5688-2409-40f4-2e-daaf-f154-e11d-cb75-9040.ngrok-free.app/api/github/webhook
 
