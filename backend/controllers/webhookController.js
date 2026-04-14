@@ -1,4 +1,5 @@
 const { User } = require("../models");
+const llmService = require("../services/llmService");
 const githubService = require("../services/githubService");
 
 const handleGithubWebhook = async (req, res) => {
@@ -33,7 +34,12 @@ const handleGithubWebhook = async (req, res) => {
       // 3. LOG THE DIFF (Just to see it for now)
       console.log("--- START OF DIFF ---");
       console.log(diff.substring(0, 500)); // Print first 500 chars
-      console.log("--- END OF DIFF ---");
+
+      // 2. Pass the Diff to the LLM
+      console.log("🧠 AI is analyzing the code...");
+      const aiReview = await llmService.analyzeCodeDiff(diff);
+
+      console.log("aiReview", aiReview);
     } catch (error) {
       console.error("Workflow failed:", error);
     }
