@@ -2,12 +2,12 @@ const express = require("express");
 const db = require("./models");
 const app = express();
 const authRoutes = require("./routes/authRoutes");
-const userRoutes = require("./routes/webhookRoutes");
+const webhookRoutes = require("./routes/webhookRoutes");
 
 app.use(express.json());
 // Auth Routes
 app.use("/api/auth", authRoutes);
-app.use("/api", userRoutes);
+app.use("/api", webhookRoutes);
 
 app.get("/", (req, res) => res.send("Hello world!"));
 
