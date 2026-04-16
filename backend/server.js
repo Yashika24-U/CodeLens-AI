@@ -3,11 +3,13 @@ const db = require("./models");
 const app = express();
 const authRoutes = require("./routes/authRoutes");
 const webhookRoutes = require("./routes/webhookRoutes");
+const promptRoutes = require("./routes/promptRoutes");
 
 app.use(express.json());
 // Auth Routes
 app.use("/api/auth", authRoutes);
 app.use("/api", webhookRoutes);
+app.use("/api", promptRoutes);
 
 app.get("/", (req, res) => res.send("Hello world!"));
 

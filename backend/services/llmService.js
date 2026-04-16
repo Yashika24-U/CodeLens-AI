@@ -1,5 +1,6 @@
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const promptService = require("../services/promptService");
 
 exports.analyzeCodeDiff = async (diffText) => {
   const model = await genAI.getGenerativeModel({
@@ -32,4 +33,29 @@ exports.analyzeCodeDiff = async (diffText) => {
     // Returning "[]" is perfect here; it prevents the controller from crashing
     return "[]";
   }
+};
+
+exports.aiService = {
+  generate: async (reqBody) => {
+    const systemInstruction = promptService.generateMasterPrompt(reqBody);
+    try {
+      const model = await genAI.getGenerativeModel({
+        model: "gemini-3-flash-preview",
+        systemInstruction: systemInstruction,
+      });
+
+      const result = await model.generateContent(reqBody.content);
+
+      const response = await result.response;
+
+      const text = response.text();
+
+      const cleanedText = text.replace(/```json|```/g, "").trim();
+
+      return JSON.parse(cleanedText);
+    } catch (error) {
+      console.error("Gemini Service Error:", error);
+      throw new Error("Failed to process request with Gemini");
+    }
+  },
 };
