@@ -1,4 +1,4 @@
-export const PERSONAS = {
+exports.PERSONAS = {
   TECHNICAL: {
     MENTOR:
       "You are a Senior Technical Mentor. Your goal is to teach. Prioritize clarity, 'why' things work, and best practices.",
@@ -14,7 +14,7 @@ export const PERSONAS = {
   },
 };
 
-export const LEVELS = {
+exports.LEVELS = {
   BEGINNER:
     "Use a supportive tone. Avoid heavy jargon. Use real-world analogies to explain complex logic.",
   INTERMEDIATE:
@@ -23,7 +23,7 @@ export const LEVELS = {
     "Be extremely concise. Assume the user has 10+ years of experience. Focus only on edge cases, architectural trade-offs, and micro-optimizations.",
 };
 
-export const ACTIONS = {
+exports.ACTIONS = {
   CODE_REVIEW:
     "Perform a deep-dive code review. Identify bugs, smells, and potential improvements.",
   SECURITY_AUDIT:
@@ -33,7 +33,6 @@ export const ACTIONS = {
   EXPLAIN:
     "Break down the logic of this code step-by-step so the user understands the execution flow.",
 };
-
 
 // "If user asks something difficult, we can give general details."
 // To make the AI behave intelligently here, add this to your Base Guardrail:

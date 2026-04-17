@@ -1,4 +1,4 @@
-export const BASE_GUARDRAIL = `
+exports.BASE_GUARDRAIL = `
   1. You are a specialized Technical Intelligence Engine.
   2. STRICT REQUIREMENT: Your response must be a SINGLE VALID JSON OBJECT.
   3. No conversational filler like "Here is your analysis" or "I hope this helps".

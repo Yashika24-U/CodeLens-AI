@@ -1,6 +1,6 @@
-const aiService = require("../services/promptService");
+const { aiService } = require("../services/llmService");
 
-export const analyzePrompts = async (req, res) => {
+exports.analyzePrompts = async (req, res) => {
   try {
     const result = await aiService.generate(req.body);
     res.status(200).json({

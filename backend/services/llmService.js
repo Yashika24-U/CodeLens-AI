@@ -34,7 +34,6 @@ exports.analyzeCodeDiff = async (diffText) => {
     return "[]";
   }
 };
-
 exports.aiService = {
   generate: async (reqBody) => {
     const systemInstruction = promptService.generateMasterPrompt(reqBody);
@@ -42,14 +41,14 @@ exports.aiService = {
       const model = await genAI.getGenerativeModel({
         model: "gemini-3-flash-preview",
         systemInstruction: systemInstruction,
+        generationConfig: {
+          responseMimeType: "application/json",
+        },
       });
 
       const result = await model.generateContent(reqBody.content);
-
       const response = await result.response;
-
       const text = response.text();
-
       const cleanedText = text.replace(/```json|```/g, "").trim();
 
       return JSON.parse(cleanedText);

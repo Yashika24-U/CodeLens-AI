@@ -50,8 +50,6 @@ const handleGithubWebhook = async (req, res) => {
       );
 
       // 4. Analyze code via LLMd
-      console.log("🧠 AI is analyzing the code...");
-
       const rawAiReview = await llmService.analyzeCodeDiff(diff);
 
       if (!rawAiReview || typeof rawAiReview !== "string") {
@@ -68,24 +66,18 @@ const handleGithubWebhook = async (req, res) => {
       if (jsonStart !== -1) {
         const finalJson = cleanString.substring(jsonStart, jsonEnd);
         const suggestions = JSON.parse(finalJson);
-
-        console.log("Found suggestions:", suggestions.length);
-
         const existingCommentsSet = await githubService.getExistingComments(
           owner,
           repo,
           prNumber,
           user.githubAccessToken,
         );
-        console.log("exc", existingCommentsSet);
-
         // // 6. Post comments to GitHub
         for (const comment of suggestions) {
           // 2. Create a unique key for the current suggestion
           const suggestionKey = `${comment.path}:${comment.body}`;
 
           if (existingCommentsSet.has(suggestionKey)) {
-            console.log(`Skipping duplicate comment for ${suggestion.path}`);
             continue; // Skip to the next suggestion
           }
           try {
@@ -97,16 +89,10 @@ const handleGithubWebhook = async (req, res) => {
               comment,
               commitId,
             );
-            console.log(
-              `Comment created with ID: ${result.id} on line ${result.line}`,
-            );
           } catch (error) {
             console.error("Error creating comment:", error.message);
           }
         }
-
-        console.log("✅ All review comments posted successfully.");
-
         return res.status(200).send("Review posted!");
       } else {
         console.warn("No JSON array found in AI response.");

@@ -57,7 +57,6 @@ exports.createLineComment = async (
   commitId,
 ) => {
   try {
-    console.log("commentData", commentData);
     const { body, path, line } = commentData;
     const response = await axios.post(
       `https://api.github.com/repos/${owner}/${repo}/pulls/${prNumber}/comments`,
@@ -77,7 +76,6 @@ exports.createLineComment = async (
     );
     return response.data;
   } catch (error) {
-    console.log("error", error);
     throw error;
   }
 };
@@ -96,7 +94,6 @@ exports.getExistingComments = async (owner, repo, pullNumber, token) => {
 
     return new Set(response.data.map((c) => `${c.path}: ${c.body}`));
   } catch (error) {
-    console.log("error", error);
     throw error;
   }
 };
