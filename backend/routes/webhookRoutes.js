@@ -2,6 +2,6 @@ const express = require("express");
 const router = express.Router();
 const webhookController = require("../controllers/webhookController");
 
-router.post("/github/webhook", webhookController.handleGithubWebhook);
+router.post("/webhook", webhookController.handleGithubWebhook);
 
 module.exports = router;

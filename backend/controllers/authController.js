@@ -5,6 +5,7 @@ const crypto = require("crypto");
 require("dotenv").config();
 
 exports.initiateGitHubLogin = (req, res) => {
+  res.clearCookie("token");
   const state = crypto.randomBytes(16).toString("hex");
   if (req.session) {
     req.session.oauthState = state;
@@ -27,7 +28,17 @@ exports.initiateGitHubLogin = (req, res) => {
 // Handle callback
 exports.handleCallback = async (req, res) => {
   try {
-    const { code } = req.query;
+    const { code, state } = req.query;
+    const savedState = req.session ? req.session.oauthState : null;
+    if (!state || state !== savedState) {
+      console.error("STATE MISMATCH: Possible CSRF attack or session lost.");
+      return res
+        .status(403)
+        .json({ error: "Security validation failed. Please try again." });
+    }
+
+    delete req.session.oauthState;
+
     if (!code) {
       return res.status(400).json({ error: "No code provided from GitHub" });
     }

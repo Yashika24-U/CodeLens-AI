@@ -34,9 +34,16 @@ exports.analyzeCodeDiff = async (diffText) => {
     return "[]";
   }
 };
+
+// Generate AI service
 exports.aiService = {
-  generate: async (reqBody) => {
-    const systemInstruction = promptService.generateMasterPrompt(reqBody);
+  generate: async ({ content, depth, tech_stack }) => {
+    const systemInstruction = await promptService.generateMasterPrompt({
+      content,
+      depth,
+      tech_stack,
+    });
+
     try {
       const model = await genAI.getGenerativeModel({
         model: "gemini-3-flash-preview",
@@ -46,12 +53,25 @@ exports.aiService = {
         },
       });
 
-      const result = await model.generateContent(reqBody.content);
+      if (!content || typeof content !== "string") {
+        throw new Error("Invalid content passed to Gemini");
+      }
+
+      const result = await model.generateContent(content);
+
       const response = await result.response;
+
+      console.log("%c⧭", "color: #007300");
       const text = response.text();
       const cleanedText = text.replace(/```json|```/g, "").trim();
 
-      return JSON.parse(cleanedText);
+      try {
+        const data = JSON.parse(cleanedText);
+
+        return data;
+      } catch (e) {
+        console.error("Still failed to parse:", e);
+      }
     } catch (error) {
       console.error("Gemini Service Error:", error);
       throw new Error("Failed to process request with Gemini");

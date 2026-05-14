@@ -36,6 +36,16 @@ services:
     env_file:
       - ./.env
 
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    restart: always
+
+  # We will eventually add a 'worker' service here,
+  # but for now, we'll run the worker inside your backend container
+  # or as a separate process.
+
   frontend:
     build:
       context: ./frontend
