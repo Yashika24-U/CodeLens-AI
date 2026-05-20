@@ -1,6 +1,6 @@
-const { aiService } = require("../services/llmService");
-const { Review } = require("../models");
-const { aiQueue } = require("../config/redis");
+const { aiService } = require("../../services/llmService");
+const { Review } = require("../../models");
+const { aiQueue } = require("../../config/redis");
 
 exports.analyzePrompts = async (req, res) => {
   const ALLOWED_DEPTHS = ["BEGINNER", "INTERMEDIATE", "EXPERT"];
@@ -27,7 +27,6 @@ exports.analyzePrompts = async (req, res) => {
       status: "PENDING",
     });
 
-    
     // 2. ADD TO REDIS (The Producer Step)
     // We pass the database 'id' so the worker knows which row to update later
 

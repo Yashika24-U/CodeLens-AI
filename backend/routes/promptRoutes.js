@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const analyzeController = require("../controllers/promptAnalyzeController");
+const analyzeController = require("../controllers/prompt/promptAnalyzeController");
 
 router.post("/github/prompt", analyzeController.analyzePrompts);
 

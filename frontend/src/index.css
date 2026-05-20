@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+@theme {
+  /* The deep background from your screenshot */
+  --color-obsidian: #0a0a0a;
+  --color-obsidian-light: #111111;
+
+  /* The blue glow accent */
+  --color-gemini-blue: #3b82f6;
+  --color-gemini-cyan: #22d3ee;
+
+  /* Glass borders */
+  --color-glass-border: rgba(255, 255, 255, 0.1);
+}
+
+/* 1. Base Styles (Just write normal CSS, no @layer base needed!) */
+body {
+  background-color: var(--color-obsidian);
+  color: var(--color-slate-200);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-family: "Inter", system-ui, sans-serif;
+}
+
+/* Custom Scrollbar for the Code Editor area */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background-color: var(--color-obsidian);
+}
+::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* 2. Custom Utilities (Just write a normal class name, no @layer utilities needed!) */
+.blue-glow {
+  background: radial-gradient(
+    circle at center,
+    rgba(59, 130, 246, 0.15) 0%,
+    transparent 70%
+  );
+}

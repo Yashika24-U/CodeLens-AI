@@ -1,6 +1,6 @@
-const { User } = require("../models");
-const llmService = require("../services/llmService");
-const githubService = require("../services/githubService");
+const { User } = require("../../models");
+const llmService = require("../../services/llmService");
+const githubService = require("../../services/githubService");
 
 const handleGithubWebhook = async (req, res) => {
   const event = req.headers["x-github-event"];

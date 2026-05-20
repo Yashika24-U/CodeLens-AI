@@ -8,6 +8,7 @@ const authRoutes = require("./routes/authRoutes");
 const webhookRoutes = require("./routes/webhookRoutes");
 const promptRoutes = require("./routes/promptRoutes");
 const checkIdentity = require("./middleware/auth.middleware");
+const { protect } = require("./middleware/auth.middleware");
 require("./workers/reviewWorker");
 
 app.use(express.json());
@@ -41,10 +42,15 @@ app.use(
     },
   }),
 );
-// Auth Routes
+
 app.use("/api/auth", authRoutes);
 app.use("/api/github", webhookRoutes);
-app.use("/api/v1", checkIdentity.checkIdentity, promptRoutes);
+// app.use("/api/v1", checkIdentity.checkIdentity, promptRoutes);
+
+// Protected Routes
+app.get("/auth/me", protect, (req, res) => {
+  res.status(200).json({ user: req.user });
+});
 
 app.get("/", (req, res) => res.send("Hello world!"));
 
@@ -54,7 +60,7 @@ const startServer = async () => {
     console.log(" Database connected successfully.");
 
     // 2. Sync models (Optional, but good for dev)
-    // await db.sequelize.sync({ alter: true });
+    await db.sequelize.sync({ alter: true });
     console.log("✅ Database models synchronized (Tables created).");
 
     // 3. NOW start the server

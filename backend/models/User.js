@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       githubId: {
         type: DataTypes.STRING,
         unique: true,
-        allowNull: false,
+        allowNull: true,
       },
       username: {
         type: DataTypes.STRING,
@@ -20,6 +20,10 @@ module.exports = (sequelize, DataTypes) => {
       email: {
         type: DataTypes.STRING,
         allowNull: true,
+      },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: true, // true because GitHub users won't have a password
       },
       avatarUrl: {
         type: DataTypes.STRING,
