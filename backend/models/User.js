@@ -25,6 +25,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: true, // true because GitHub users won't have a password
       },
+      passwordResetToken: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      passwordResetExpires: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
       avatarUrl: {
         type: DataTypes.STRING,
       },
@@ -41,3 +49,5 @@ module.exports = (sequelize, DataTypes) => {
 
   return User;
 };
+
+

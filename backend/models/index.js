@@ -47,3 +47,7 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 module.exports = db;
+
+// docker exec -it <container_name_or_id> psql -U postgres -d your_database_name
+
+

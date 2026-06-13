@@ -7,8 +7,10 @@ const app = express();
 const authRoutes = require("./routes/authRoutes");
 const webhookRoutes = require("./routes/webhookRoutes");
 const promptRoutes = require("./routes/promptRoutes");
+
 const checkIdentity = require("./middleware/auth.middleware");
 const { protect } = require("./middleware/auth.middleware");
+const { seedSystem } = require("./seeders/seedRouter");
 require("./workers/reviewWorker");
 
 app.use(express.json());
@@ -45,6 +47,7 @@ app.use(
 
 app.use("/api/auth", authRoutes);
 app.use("/api/github", webhookRoutes);
+app.use("/api/prompt", promptRoutes);
 // app.use("/api/v1", checkIdentity.checkIdentity, promptRoutes);
 
 // Protected Routes
@@ -54,13 +57,25 @@ app.get("/auth/me", protect, (req, res) => {
 
 app.get("/", (req, res) => res.send("Hello world!"));
 
+app.post("/api/routerdata/init", async (req, res) => {
+  try {
+    seedSystem();
+    return res.status(200).json({
+      success: true,
+      message: "System initialized and seeded successfully.",
+    });
+  } catch (error) {
+    console.log("%c⧭Error in seedData", "color: #7f7700", error);
+  }
+});
+
 const startServer = async () => {
   try {
     await db.sequelize.authenticate();
     console.log(" Database connected successfully.");
 
     // 2. Sync models (Optional, but good for dev)
-    await db.sequelize.sync({ alter: true });
+    // await db.sequelize.sync({ alter: true });
     console.log("✅ Database models synchronized (Tables created).");
 
     // 3. NOW start the server
