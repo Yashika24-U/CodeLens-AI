@@ -2,6 +2,9 @@ const bcrypt = require("bcryptjs");
 const { User } = require("../../models");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
+const crypto = require("crypto");
+const nodemailer = require("nodemailer");
+
 const sendTokenResponse = (user, statusCode, res) => {
   // Generate JWT token containing the user ID as its payload
   const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, {
@@ -12,7 +15,7 @@ const sendTokenResponse = (user, statusCode, res) => {
   const cookieOptions = {
     expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days in milliseconds
     httpOnly: true, // CRITICAL: Prevents frontend JavaScript from reading the cookie (Stops XSS)
-    secure: process.env.NODE_ENV === "development", // Transmit only over HTTPS in production
+    secure: process.env.NODE_ENV === "production", // Transmit only over HTTPS in production
     sameSite: "lax", // Protects against CSRF attacks while allowing cross-site layout rendering
   };
 
@@ -54,7 +57,6 @@ exports.register = async (req, res) => {
 
     sendTokenResponse(newUser, 201, res);
   } catch (error) {
-    console.error("Registration Error: ", error);
     res.status(500).json({ message: "Internal server registration error." });
   }
 };
@@ -80,6 +82,7 @@ exports.login = async (req, res) => {
 
     // 3. Compare raw input password with the hashed variant stored in DB
     const isMatch = await bcrypt.compare(password, user.password);
+
     if (!isMatch) {
       return res
         .status(401)
@@ -89,7 +92,6 @@ exports.login = async (req, res) => {
     // 4. Verification successful, hand back browser session tokens
     sendTokenResponse(user, 200, res);
   } catch (error) {
-    console.error("Login Error: ", error);
     res.status(500).json({ message: "Internal server authentication error." });
   }
 };
@@ -106,7 +108,6 @@ exports.logout = async (req, res) => {
       .status(200)
       .json({ success: true, message: "User logged out successfully." });
   } catch (error) {
-    console.error("Logout Error: ", error);
     res.status(500).json({ message: "Internal server logout error." });
   }
 };
@@ -121,9 +122,7 @@ exports.forgotPassword = async (req, res) => {
         .json({ success: false, message: "Email address is required." });
     }
 
-    const user = User.findOne({ email: email.toLowerCase().trim() });
-
-    console.log("%c⧭user in forgotpaswd", "color: #40fff2", user);
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
 
     // 2. Security Privacy Guard: If user doesn't exist, don't tell the client!
     // Returning a generic success stops hackers from enumerating active accounts.
@@ -137,13 +136,14 @@ exports.forgotPassword = async (req, res) => {
 
     const resetToken = crypto.randomBytes(32).toString("hex");
 
-    const tokenLifespanMs = 15 * 60 * 100;
+    const tokenLifespanMs = 15 * 60 * 1000;
     const resetTokenExpires = new Date(Date.now() + tokenLifespanMs);
 
     // Save the credentials straight onto the user's database record row
 
     user.passwordResetToken = resetToken;
-    user.passwordResetTokenExpires = resetTokenExpires;
+    user.passwordResetExpires = resetTokenExpires;
+
     await user.save();
 
     const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
@@ -183,7 +183,6 @@ exports.forgotPassword = async (req, res) => {
         "If a matching account exists, a secure password reset link has been sent to your inbox.",
     });
   } catch (error) {
-    console.error("Forgot password system malfunction:", error);
     return res.status(500).json({
       success: false,
       message:
@@ -243,7 +242,6 @@ exports.resetPassword = async (req, res) => {
         "Your password has been successfully updated. You can now log in with your new credentials.",
     });
   } catch (error) {
-    console.error("Reset password terminal malfunction:", error);
     return res.status(500).json({
       success: false,
       message: "Internal server error while processing your new password.",

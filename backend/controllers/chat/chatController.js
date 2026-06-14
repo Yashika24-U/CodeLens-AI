@@ -28,14 +28,12 @@ exports.handleUserPrompt = async (req, res) => {
 
     const cachedResponse = await connection.get(cacheKey);
     if (cachedResponse) {
-      console.log("🚀 Redis Cache Hit! Returning instant response.");
       return res.status(200).json(JSON.parse(cachedResponse));
     }
 
     // 🔍 STEP 2: Intent Classification Layer (The Semantic Router)
     // This happens *only* if Redis doesn't have the answer recorded yet.
     const selectedModel = await determineOptimalModel(cleanPrompt);
-    console.log(`🤖 Semantic Router selected model: ${selectedModel}`);
 
     // 📚 STEP 3: Context Compilation (Fetch history for active conversations)
     const history = sanitizedTargetId
@@ -48,7 +46,6 @@ exports.handleUserPrompt = async (req, res) => {
       history,
     );
 
-    console.log("%c⧭Await after execute LLM", "color: #ffa280");
     // 3. Save the response into your Redis Cache immediately (for the next hit)
     await connection.set(
       cacheKey,
@@ -57,7 +54,6 @@ exports.handleUserPrompt = async (req, res) => {
       3600,
     );
 
-    console.log("%c⧭Afterrrr cachingggggg", "color: #eeff00");
     // 💾 STEP 4: Database Persistence (Save incoming user request state)
     await ChatMessage.create({
       id: crypto.randomUUID(),

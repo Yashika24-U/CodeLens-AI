@@ -214,10 +214,6 @@ async function seedSystem() {
         bind: [item.intent, item.phrase, pgVectorString, item.model],
         type: QueryTypes.INSERT, // Tells Sequelize this is an insertion command
       });
-
-      console.log(
-        "\n🚀 All done! Your vector routing database is fully populated and armed.",
-      );
     }
   } catch (error) {
     console.error("❌ Seeding failed:", error);

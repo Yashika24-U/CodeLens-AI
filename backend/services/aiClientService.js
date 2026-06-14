@@ -13,7 +13,7 @@ const callExpensiveModel = async (prompt) => {
       latencyMs: 1500,
     };
     // ─── OTHERWISE, RUN THE REAL PAID PRODUCTION CODE ───
-    console.log("🚀 [PROD MODE]: Hitting the live premium API endpoint...");
+
     const response = await openai.chat.completions.create({
       model: "o1-mini",
       messages: [{ role: "user", content: prompt }],
@@ -22,4 +22,3 @@ const callExpensiveModel = async (prompt) => {
     return response;
   }
 };
-                                                                                                             

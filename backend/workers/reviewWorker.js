@@ -6,12 +6,10 @@ const llmService = require("../services/llmService");
 exports.reviewWorker = new Worker(
   "ai-review-queue",
   async (job) => {
-    console.log("%c⧭ jodData", "color: #00a3cc", job.data);
+   
     const { reviewId, content, depth, tech_stack } = job.data;
 
-    try {
-      console.log("%c Inside try in reviewWorker", "color: #917399");
-      // 1. Call the actual AI service (takes ~45 seconds)
+    try {   // 1. Call the actual AI service (takes ~45 seconds)
 
       const aiFeedback = await llmService.aiService.generate({
         content: job.data.content,
@@ -29,10 +27,7 @@ exports.reviewWorker = new Worker(
         },
       );
 
-      console.log(
-        `%c⧭ Job ${job.id} completed for Review ${reviewId}`,
-        "color: #00e600",
-      );
+    
     } catch (error) {
       await Review.update(
         {

@@ -61,7 +61,6 @@ exports.aiService = {
 
       const response = await result.response;
 
-      console.log("%c⧭", "color: #007300");
       const text = response.text();
       const cleanedText = text.replace(/```json|```/g, "").trim();
 

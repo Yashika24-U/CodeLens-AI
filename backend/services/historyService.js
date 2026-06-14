@@ -8,7 +8,6 @@
 const { ChatMessage } = require("../models");
 
 exports.getSlidingWindowContext = async (conversationId, limitTurns = 4) => {
-  console.log("%c⧭**Inside getSlidingWindowContext**", "color: #bfffc8");
   try {
     const rawMessages = await ChatMessage.findAll({
       where: { conversationId },

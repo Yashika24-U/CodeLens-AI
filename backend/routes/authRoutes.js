@@ -8,7 +8,7 @@ router.post("/register", authController.register);
 router.post("/login", authController.login);
 router.get("/logout", authController.logout);
 router.post("/forgot-password", authController.forgotPassword);
-router.post("/reset-password", authController.resetPassword);
+router.put("/reset-password", authController.resetPassword);
 router.get("/github", oauthController.initiateGitHubLogin);
 router.get("/github/callback", oauthController.handleCallback);
 

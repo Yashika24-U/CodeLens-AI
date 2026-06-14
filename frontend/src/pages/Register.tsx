@@ -89,7 +89,7 @@ export default function RegisterPage() {
         navigate("/dashboard");
       }
     } catch (error) {
-      console.log("%c⧭checkAuth Error: ", "color: #1d3f73", error);
+      toast.error(`Error : ${error}`);
     }
   };
 
@@ -225,7 +225,7 @@ export default function RegisterPage() {
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500
-                           hover:text-slate-300 transition-colors"
+                           hover:text-slate-300 transition-colors cursor-pointer"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 <EyeIcon open={showPassword} />
@@ -300,7 +300,7 @@ export default function RegisterPage() {
                 type="button"
                 onClick={() => setShowConfirm((v) => !v)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500
-                           hover:text-slate-300 transition-colors"
+                           hover:text-slate-300 transition-colors cursor-pointer"
                 aria-label={showConfirm ? "Hide password" : "Show password"}
               >
                 <EyeIcon open={showConfirm} />

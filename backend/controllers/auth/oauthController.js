@@ -27,12 +27,10 @@ exports.initiateGitHubLogin = (req, res) => {
 
 // Handle callback
 exports.handleCallback = async (req, res) => {
-  console.log("%c⧭Inside Callback", "color: #e5de73");
   try {
     const { code, state } = req.query;
     const savedState = req.session ? req.session.oauthState : null;
     if (!state || state !== savedState) {
-      console.error("STATE MISMATCH: Possible CSRF attack or session lost.");
       return res
         .status(403)
         .json({ error: "Security validation failed. Please try again." });
@@ -46,8 +44,6 @@ exports.handleCallback = async (req, res) => {
 
     // 1. Exchange code for Access Token
     const accessToken = await githubService.exchangeCodeForToken(code);
-
-    console.log("%c⧭ accessToken", "color: #33cc99", accessToken);
 
     // 2. Get User Profile using that token
     const profile = await githubService.fetchGitHubProfile(accessToken);
@@ -83,12 +79,9 @@ exports.handleCallback = async (req, res) => {
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     });
 
-    console.log("%c⧭before redirect in backend", "color: #364cd9");
-
     // 7. Redirect to Frontend
     res.redirect(process.env.FRONTEND_URL);
   } catch (error) {
-    console.error("Auth Error:", error.message);
     const errorUrl = `${process.env.FRONTEND_URL}/login?error=auth_failed`;
     res.redirect(errorUrl);
   }

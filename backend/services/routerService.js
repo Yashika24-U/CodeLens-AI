@@ -11,8 +11,8 @@ async function initEmbeddingModel() {
     // and outputs the calculated meaning.
 
     extractor = await pipeline("feature-extraction", "Xenova/all-MiniLM-L6-v2");
-    console.log("%c⧭extractor", "color: #f279ca", extractor);
-    console.log("⚡ local all-MiniLM-L6-v2 loaded in-memory and ready!");
+  
+  
   }
 }
 
@@ -49,21 +49,21 @@ async function determineOptimalModel(text) {
     type: db.Sequelize.QueryTypes.SELECT,
   });
 
-  console.log("%c⧭**", "color: #994d75", res);
+
 
   const topMatch = res[0];
 
-  console.log("%c topMatch", "color: #7f2200", topMatch);
+  
 
   const confidenceScore = topMatch ? 1 - topMatch.distance : 0;
 
-  console.log("%c⧭ confidenceScore", "color: #33cc99", confidenceScore);
+ 
 
   if (confidenceScore >= 0.6) {
-    console.log(`Routing to: ${topMatch.target_model}`);
+   
     return topMatch.target_model;
   } else {
-    console.log("Low confidence score. Saving query for discovery pipeline...");
+   
 
     await db.sequelize
       .query(

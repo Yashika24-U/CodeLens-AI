@@ -3,19 +3,34 @@ import "./index.css";
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { Toaster } from "react-hot-toast";
 
 // Pages
 import LoginPage from "./pages/LoginPage";
 import Dashboard from "./pages/Dashboard";
 import RegisterPage from "./pages/Register";
+import ResetPassword from "./pages/ResetPassword";
 
 const App: React.FC = () => {
   return (
     <BrowserRouter>
+      <Toaster
+        position="top-center"
+        reverseOrder={false}
+        toastOptions={{
+          // Optional styling to match your dark/obsidian theme
+          style: {
+            background: "#1e1e24",
+            color: "#f8fafc",
+            border: "1px solid rgba(255,255,255,0.1)",
+          },
+        }}
+      />
       <Routes>
         {/* Public Routes */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>

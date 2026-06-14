@@ -4,8 +4,6 @@ const { kmeans } = require("ml-kmeans");
 
 async function runDiscoveryPipeline(numberOfClusters = 3) {
   try {
-    console.log("🚀 Starting Unclassified Query Discovery Pipeline...");
-
     // 1. Fetch all logged unclassified entries from Postgres
     const rawQueries = await db.sequelize.query(
       `SELECT raw_query, query_embedding FROM unclassified_queries`,
@@ -13,9 +11,6 @@ async function runDiscoveryPipeline(numberOfClusters = 3) {
     );
 
     if (rawQueries.length < numberOfClusters * 2) {
-      console.log(
-        "ℹ️ Not enough unclassified data yet to find meaningful patterns.",
-      );
       return;
     }
 
@@ -38,14 +33,8 @@ async function runDiscoveryPipeline(numberOfClusters = 3) {
     });
 
     // 5. Print out the structured clusters for analytical evaluation
-    console.log("\n📊 --- DISCOVERY PIPELINE ANALYSIS RESULTS ---");
-    clusters.forEach((phrases, index) => {
-      console.log(
-        `\n📦 Cluster #${index + 1} contains (${phrases.length} items):`,
-      );
-      console.log(`   Sample Prompts:`, phrases.slice(0, 5)); // Show top 5 sample items
-    });
-    console.log("\n──────────────────────────────────────────────");
+
+    clusters.forEach((phrases, index) => {});
 
     return clusters;
   } catch (error) {

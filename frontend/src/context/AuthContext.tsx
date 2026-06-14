@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         });
         setUser(response.data.user);
       } catch (error) {
-        console.log("%c⧭checkAuth Error: ", "color: #1d3f73", error);
+        console.log("%c⧭Error in AuthContext", "color: #807160", error);
         setUser(null);
       } finally {
         setLoading(false);

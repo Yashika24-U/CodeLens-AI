@@ -21,8 +21,6 @@ exports.getDashboardStats = async (req, res) => {
       whereClause.createdAt = { [Op.gte]: startOfMonth };
     }
 
-    console.log("%c⧭ whereClause", "color: #aa00ff", whereClause);
-
     // 2. Fetch data from DB using the whereClause (Sequelize handles empty objects perfectly!)
     const kpiMetrics = await ApiLog.findOne({
       where: whereClause,
@@ -44,7 +42,6 @@ exports.getDashboardStats = async (req, res) => {
       ],
       raw: true,
     });
-    console.log("%c⧭kpiMetrics", "color: #607339", kpiMetrics);
 
     const mostRoutedModelResult = await ApiLog.findOne({
       where: whereClause,
@@ -56,12 +53,6 @@ exports.getDashboardStats = async (req, res) => {
       order: [[literal("modelCount"), "DESC"]], // Highest count first
       raw: true,
     });
-
-    console.log(
-      "%c⧭ mostRoutedModelResult",
-      "color: #1d5673",
-      mostRoutedModelResult,
-    );
 
     const modelBreakDown = await ApiLog.findAll({
       // 1. Changed to findAll to get a list
@@ -120,7 +111,6 @@ exports.getDashboardStats = async (req, res) => {
       })),
     });
   } catch (error) {
-    console.log("Analytics extraction error:", error);
     return res
       .status(500)
       .json({ success: false, message: "Error compiling dashboard stats" });

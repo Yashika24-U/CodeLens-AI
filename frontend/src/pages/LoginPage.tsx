@@ -37,6 +37,7 @@ export default function LoginPage() {
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormValues>({
     mode: "onTouched", // validate on blur, then live on change
@@ -48,22 +49,32 @@ export default function LoginPage() {
 
   // ── Submit handler ────────────────────────────────────────────────────────
   const onSubmit = async (data: LoginFormValues) => {
+   
     await new Promise((r) => setTimeout(r, 1500)); // simulated network delay
     try {
+     
       const resp = await login(data.email, data.password);
-      const typedResp = resp as { success: boolean };
-      if (typedResp.success) {
+
+   
+      const typedResp = resp as { success: boolean; message?: string };
+      if (typedResp && typedResp.success) {
         toast.success("Welcome back!");
         navigate("/dashboard");
+      } else {
+        // 👈 FIX: Catch scenarios where response is HTTP 200 but auth failed
+        toast.error(
+          typedResp.message || "Invalid credentials. Please try again.",
+        );
       }
     } catch (error: unknown) {
-      console.error("Login component caught an error:", error);
+    
       let errorMessage = "Something went wrong. Please try again.";
 
       if (axios.isAxiosError(error)) {
         // TypeScript now knows 'error.response' definitely exists!
         errorMessage = error.response?.data?.message || errorMessage;
       }
+
       toast.error(errorMessage);
     }
   };
@@ -73,6 +84,25 @@ export default function LoginPage() {
     `${inputBase} ${hasError ? "border-red-500/60 focus:border-red-500 focus:ring-red-500" : ""}`;
 
   // ─────────────────────────────────────────────────────────────────────────
+
+  const handleForgotPasswordSubmit = async (e: React.MouseEvent) => {
+    
+    e.preventDefault();
+    const currentEmail = getValues("email");
+    if (!currentEmail || currentEmail.trim() === "") {
+      alert("Please enter your email address first!");
+      return; // Stop execution here
+    }
+
+    try {
+      await axios.post(`http://localhost:5000/api/auth/forgot-password`, {
+        email: currentEmail,
+      });
+      alert("Check your email for the reset link!");
+    } catch (error) {
+      console.error("Error sending reset email", error);
+    }
+  };
   return (
     <div className="min-h-screen bg-obsidian flex items-center justify-center p-4 relative">
       <BackgroundGlow />
@@ -138,7 +168,8 @@ export default function LoginPage() {
               </label>
               <button
                 type="button"
-                className="text-xs text-gemini-cyan hover:underline transition-colors"
+                className="text-xs text-gemini-cyan hover:underline transition-colors cursor-pointer"
+                onClick={handleForgotPasswordSubmit}
               >
                 Forgot password?
               </button>
@@ -163,7 +194,7 @@ export default function LoginPage() {
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500
-                           hover:text-slate-300 transition-colors"
+                           hover:text-slate-300 transition-colors cursor-pointer"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 <EyeIcon open={showPassword} />
