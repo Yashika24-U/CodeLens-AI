@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
 import api from "../api/axios";
+import { Navigate } from "react-router-dom";
 
 // 1. Define the User shape
 interface User {
@@ -19,6 +20,7 @@ interface LoginResponse {
 interface AuthContextType {
   user: User | null;
   loading: boolean;
+  token?: string;
   login: (email: string, password: string) => Promise<unknown>;
   logout: () => Promise<void>;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
@@ -32,7 +34,6 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
-
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -44,7 +45,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         });
         setUser(response.data.user);
       } catch (error) {
-        console.log("%c⧭Error in AuthContext", "color: #807160", error);
         setUser(null);
       } finally {
         setLoading(false);
@@ -52,6 +52,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     };
     checkAuth();
   }, []);
+
+  
 
   const login = async (
     email: string,

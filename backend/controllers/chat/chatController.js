@@ -10,6 +10,8 @@ const crypto = require("crypto");
 exports.handleUserPrompt = async (req, res) => {
   const { conversationId, prompt } = req.body;
 
+ 
+
   if (!prompt || prompt.trim().length === 0) {
     return res
       .status(400)
@@ -17,9 +19,14 @@ exports.handleUserPrompt = async (req, res) => {
   }
 
   const cleanPrompt = prompt.trim().toLowerCase().replace(/\s+/g, " ");
+
+  
+
   try {
     const sanitizedTargetId =
-      conversationId.trim() !== "" ? conversationId : null;
+      conversationId && conversationId !== "" ? conversationId : null;
+
+    
     const finalConversationId = sanitizedTargetId || crypto.randomUUID();
 
     // ⚡ STEP 1: Redis Semantic / Exact Match Caching Layer
@@ -39,12 +46,51 @@ exports.handleUserPrompt = async (req, res) => {
     const history = sanitizedTargetId
       ? await getSlidingWindowContext(sanitizedTargetId, 4)
       : [];
+
+    await ChatMessage.create({
+      id: crypto.randomUUID(),
+      conversationId: finalConversationId,
+      sender: "user",
+      text: cleanPrompt,
+    });
+
     const startTime = performance.now();
+
     const aiResponseText = await executeLLMCall(
       selectedModel,
       cleanPrompt,
       history,
     );
+
+    const endTime = performance.now();
+
+    // await ChatMessage.create({
+    //   id: crypto.randomUUID(),
+    //   conversationId: finalConversationId,
+    //   sender: "model",
+    //   text: aiResponseText,
+    // });
+
+    console.log(
+      "%c⧭ Preparing to save model message to DB...",
+      "color: #00ff00",
+    );
+
+    try {
+      const savedMessage = await ChatMessage.create({
+        id: crypto.randomUUID(),
+        conversationId: finalConversationId, // 🔍 Double check what this variable equals right here!
+        sender: "model",
+        text: aiResponseText,
+      });
+
+      console.log(
+        "✅ Postgres write verified successfully:",
+        savedMessage.toJSON(),
+      );
+    } catch (dbError) {
+      console.error("❌ SEQUELIZE INSERTION CRASHED:", dbError);
+    }
 
     // 3. Save the response into your Redis Cache immediately (for the next hit)
     await connection.set(
@@ -53,16 +99,6 @@ exports.handleUserPrompt = async (req, res) => {
       "EX",
       3600,
     );
-
-    // 💾 STEP 4: Database Persistence (Save incoming user request state)
-    await ChatMessage.create({
-      id: crypto.randomUUID(),
-      conversationId: finalConversationId,
-      sender: "user",
-      text: cleanPrompt,
-    });
-
-    const endTime = performance.now();
 
     // Return instantly to the client so their application UI remains lightning fast
     return res.status(202).json({
@@ -76,8 +112,49 @@ exports.handleUserPrompt = async (req, res) => {
     });
   } catch (error) {
     console.error("❌ Critical Gateway Error:", error);
+
+    // 🛡️ Guard against secondary database failures
+    try {
+      // Best-effort attempt to save the error to the database
+      await ChatMessage.create({
+        id: crypto.randomUUID(),
+        conversationId: finalConversationId,
+        sender: "model",
+        text: "⚠️ I encountered an internal routing error while processing this prompt. Please click retry.",
+        isError: true,
+      });
+    } catch (dbError) {
+      // If the DB itself is dead, we swallow this error so it doesn't block the HTTP response!
+      console.error(
+        "🚨 Secondary Failure: Could not write error log to PostgreSQL:",
+        dbError,
+      );
+    }
+
+    // 🎯 ALWAYS return the response to the client, even if the DB is completely down
     return res
       .status(500)
       .json({ success: false, message: "Internal Gateway Routing Error." });
   }
 };
+
+exports.getUserConversation = async (req, res) => {
+  const conversationId = req.params.id;
+
+  try {
+    let response = await ChatMessage.findAll({
+      where: {
+        conversationId: conversationId,
+      },
+    });
+    res.status(200).json({ success: true, response: response });
+    // console.log("%c⧭ress", "color: #364cd9", response);
+  } catch (error) {
+    console.log("%c⧭error", "color: #ffa280", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Gateway Routing Error." });
+  }
+};
+
+

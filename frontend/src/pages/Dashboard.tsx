@@ -1,5 +1,11 @@
+import ChatWindow from "../layout/Chatwindow";
+
 const Dashboard = () => {
-  return <div>Dashboard</div>;
+  return (
+    <div>
+      <ChatWindow />
+    </div>
+  );
 };
 
 export default Dashboard;

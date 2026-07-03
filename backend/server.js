@@ -7,6 +7,7 @@ const app = express();
 const authRoutes = require("./routes/authRoutes");
 const webhookRoutes = require("./routes/webhookRoutes");
 const promptRoutes = require("./routes/promptRoutes");
+const conversationRoutes = require("./routes/conversationRoute")
 
 const checkIdentity = require("./middleware/auth.middleware");
 const { protect } = require("./middleware/auth.middleware");
@@ -47,7 +48,8 @@ app.use(
 
 app.use("/api/auth", authRoutes);
 app.use("/api/github", webhookRoutes);
-app.use("/api/prompt", promptRoutes);
+app.use("/api/chat", promptRoutes);
+app.use("/api/conversation",conversationRoutes)
 // app.use("/api/v1", checkIdentity.checkIdentity, promptRoutes);
 
 // Protected Routes

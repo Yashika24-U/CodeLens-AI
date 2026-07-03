@@ -74,6 +74,13 @@ async function executeLLMCall(targetModel, userPrompt) {
     return fallbackResponse.text;
   } catch (error) {
     console.error(`❌ LLM Call execution failed for ${targetModel}:`, error);
+
+    if (error.status === 503) {
+      return res.status(503).json({
+        error:
+          "The AI model is currently facing high demand. Please try sending your message again in a few seconds.",
+      });
+    }
     throw error;
   }
 }

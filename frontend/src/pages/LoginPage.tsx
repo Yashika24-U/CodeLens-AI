@@ -33,6 +33,8 @@ export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  console.log("%c⧭ login from useAuth", "color: #1d3f73", { login });
+
   // ── React Hook Form setup ──────────────────────────────────────────────────
   const {
     register,
@@ -49,25 +51,25 @@ export default function LoginPage() {
 
   // ── Submit handler ────────────────────────────────────────────────────────
   const onSubmit = async (data: LoginFormValues) => {
-   
     await new Promise((r) => setTimeout(r, 1500)); // simulated network delay
     try {
-     
       const resp = await login(data.email, data.password);
 
-   
-      const typedResp = resp as { success: boolean; message?: string };
+      console.log("%c⧭Login response", "color: #408059", resp);
+
+      // 2. Cast it using your existing type interface cleanly
+      const typedResp = resp as LoginResponse;
+
       if (typedResp && typedResp.success) {
         toast.success("Welcome back!");
+
         navigate("/dashboard");
       } else {
-        // 👈 FIX: Catch scenarios where response is HTTP 200 but auth failed
         toast.error(
           typedResp.message || "Invalid credentials. Please try again.",
         );
       }
     } catch (error: unknown) {
-    
       let errorMessage = "Something went wrong. Please try again.";
 
       if (axios.isAxiosError(error)) {
@@ -86,7 +88,6 @@ export default function LoginPage() {
   // ─────────────────────────────────────────────────────────────────────────
 
   const handleForgotPasswordSubmit = async (e: React.MouseEvent) => {
-    
     e.preventDefault();
     const currentEmail = getValues("email");
     if (!currentEmail || currentEmail.trim() === "") {

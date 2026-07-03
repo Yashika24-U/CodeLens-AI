@@ -17,7 +17,7 @@ exports.protect = async (req, res, next) => {
     // 3. Use Sequelize to find the user in PostgreSQL by Primary Key (id)
     // We use attributes: { exclude: ['password'] } so we don't accidentally leak the hashed password
 
-    const user = await User.findByPk(decoded.id, {
+    const user = await User.findByPk(decoded.userId, {
       attributes: { exclude: ["password"] },
     });
 
@@ -31,12 +31,6 @@ exports.protect = async (req, res, next) => {
     // 5. Pass control to the next function (the actual controller)
     next();
   } catch (error) {
-    
     return res.status(401).json({ message: "Not authorized, token failed" });
   }
 };
-
-
-
-
-

@@ -2,7 +2,7 @@ import "./index.css";
 // src/App.tsx
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./components/protected/ProtectedRoute";
 import { Toaster } from "react-hot-toast";
 
 // Pages
@@ -35,6 +35,7 @@ const App: React.FC = () => {
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/chat/:conversationId" element={<Dashboard />} />
           {/* Add more protected pages like /history or /profile here later */}
         </Route>
 
