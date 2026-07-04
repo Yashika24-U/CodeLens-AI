@@ -10,8 +10,6 @@ const crypto = require("crypto");
 exports.handleUserPrompt = async (req, res) => {
   const { conversationId, prompt } = req.body;
 
- 
-
   if (!prompt || prompt.trim().length === 0) {
     return res
       .status(400)
@@ -20,13 +18,9 @@ exports.handleUserPrompt = async (req, res) => {
 
   const cleanPrompt = prompt.trim().toLowerCase().replace(/\s+/g, " ");
 
-  
-
   try {
     const sanitizedTargetId =
       conversationId && conversationId !== "" ? conversationId : null;
-
-    
     const finalConversationId = sanitizedTargetId || crypto.randomUUID();
 
     // ⚡ STEP 1: Redis Semantic / Exact Match Caching Layer
@@ -70,11 +64,7 @@ exports.handleUserPrompt = async (req, res) => {
     //   sender: "model",
     //   text: aiResponseText,
     // });
-
-    console.log(
-      "%c⧭ Preparing to save model message to DB...",
-      "color: #00ff00",
-    );
+=
 
     try {
       const savedMessage = await ChatMessage.create({
@@ -156,5 +146,3 @@ exports.getUserConversation = async (req, res) => {
       .json({ success: false, message: "Internal Gateway Routing Error." });
   }
 };
-
-

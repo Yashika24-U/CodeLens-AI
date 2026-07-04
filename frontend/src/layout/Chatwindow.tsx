@@ -6,7 +6,7 @@ import { toast } from "react-hot-toast";
 import Sidebar from "./Sidebar";
 
 export default function ChatWindow() {
-  const [conversations, setConversations] = useState([]);
+  const [conversations, setConversations] = useState<any[]>([]);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -17,10 +17,18 @@ export default function ChatWindow() {
   const messagesEndRef = useRef(null);
   const backendUrl =
     import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
-  let count = 0;
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const fetchConversationsList = async () => {
+    try {
+      const res = await axios.get(`${backendUrl}/api/conversation/list`);
+      setConversations(res.data.data);
+    } catch (err) {
+      console.error("Error fetching sidebar list:", err);
+    }
   };
 
   useEffect(() => {
@@ -29,24 +37,10 @@ export default function ChatWindow() {
 
   // Sidebar Conversation List
   useEffect(() => {
-    const fetchConversationsList = async () => {
-      try {
-        const res = await axios.get(`${backendUrl}/api/conversation/list`);
-        console.log("%c⧭res", "color: #aa00ff", res.data.data);
-        setConversations(res.data.data);
-      } catch (err) {
-        console.error("Error fetching sidebar list:", err);
-      }
-    };
-
     fetchConversationsList();
 
     const handleSyncSignal = () => {
-      console.log(
-        "%c⧭Count inside handleSyncSignal: ",
-        "color: #0088cc",
-        count++,
-      );
+      
       fetchConversationsList();
     };
 
@@ -75,18 +69,14 @@ export default function ChatWindow() {
           { withCredentials: true }, // Pass secure HTTP-Only cookies to authorize the request
         );
 
-        console.log(
-          "%c⧭response.data.data",
-          "color: #d0bfff",
-          response.data.response,
-        );
+        
 
         if (response.data.success && isMounted) {
           setMessages(response.data.response);
         }
       } catch (error) {
         if (!isMounted) return;
-        console.error("History restoration routine failed:", error);
+       
 
         toast.error("Unable to access requested conversation history.");
         setMessages([]);
@@ -168,7 +158,11 @@ export default function ChatWindow() {
               lOGO
             </h3>
 
-            <Sidebar conversations={conversations} />
+            <Sidebar
+              conversations={conversations}
+              setConversation={setConversations}
+              refreshList={fetchConversationsList}
+            />
           </div>
         </div>
 

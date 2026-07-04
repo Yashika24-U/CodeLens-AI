@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import axios from "axios";
+const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 import {
   Plus,
   Search,
@@ -9,6 +11,7 @@ import {
   Trash2,
   Pin,
   MoreVertical,
+  AlertTriangle,
 } from "lucide-react";
 
 interface Conversation {
@@ -18,13 +21,22 @@ interface Conversation {
 
 interface SidebarProps {
   conversations: Conversation[];
+  setConversation: React.Dispatch<React.SetStateAction<Conversation[]>>;
+  refreshList: () => Promise<void>;
 }
 
-export default function Sidebar({ conversations }: SidebarProps) {
+export default function Sidebar({
+  conversations,
+  setConversation,
+  refreshList,
+}: SidebarProps) {
   const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
   const { conversationId: currentChatId } = useParams<{
     conversationId: string;
   }>();
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [convoIdToDelete, setConvoIdToDelete] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const navigate = useNavigate();
   const menuRef = useRef<HTMLDivElement | null>(null);
 
@@ -37,6 +49,43 @@ export default function Sidebar({ conversations }: SidebarProps) {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const executeDeleteAction = async () => {
+    if (!convoIdToDelete) return;
+    setIsDeleting(true);
+
+    try {
+      
+      // 1. Pass down the HTTP line to our backend route handler with our security credentials
+      let resp = await axios.delete(
+        `${backendUrl}/api/conversation/${convoIdToDelete}`,
+        {
+          withCredentials: true,
+        },
+      );
+      refreshList();
+
+  
+      // 2. Optimistic UI Update: Filter out the deleted chat from the local state list immediately
+      setConversation((prev) =>
+        prev.filter((c) => c.conversationId !== convoIdToDelete),
+      );
+
+      // 🛡️ Senior Edge Case Guard: If the user just deleted the conversation they are currently viewing, redirect them back to the dashboard blank slate!
+      if (currentChatId === convoIdToDelete) {
+        navigate("/dashboard", { replace: true });
+      }
+
+      // 3. Close out the confirmation modal framework safely
+      setIsDeleteModalOpen(false);
+      setConvoIdToDelete(null);
+    } catch (error) {
+
+      console.log('%c⧭', 'color: #f200e2', error);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   return (
     <div className="flex flex-col w-64  h-full text-[#e3e3e3] font-sans p-0 select-none justify-between border-r border-slate-800/40">
@@ -132,7 +181,7 @@ export default function Sidebar({ conversations }: SidebarProps) {
                             e.stopPropagation();
                             setActiveMenuId(null); /* TODO: Trigger Pin Logic */
                           }}
-                          className="w-full flex items-center gap-2.5 px-3 py-2 text-left text-xs font-medium text-slate-300 hover:bg-[#2c2d30] hover:text-white transition-colors"
+                          className="w-full flex items-center gap-2.5 px-3 py-2 text-left text-xs font-medium text-slate-300 hover:bg-[#2c2d30] hover:text-white transition-colors cursor-pointer"
                         >
                           <Pin className="w-3.5 h-3.5 text-slate-400" />
                           Pin thread
@@ -144,7 +193,7 @@ export default function Sidebar({ conversations }: SidebarProps) {
                               null,
                             ); /* TODO: Trigger Rename Logic */
                           }}
-                          className="w-full flex items-center gap-2.5 px-3 py-2 text-left text-xs font-medium text-slate-300 hover:bg-[#2c2d30] hover:text-white transition-colors"
+                          className="w-full flex items-center gap-2.5 px-3 py-2 text-left text-xs font-medium text-slate-300 hover:bg-[#2c2d30] hover:text-white transition-colors cursor-pointer"
                         >
                           <Pencil className="w-3.5 h-3.5 text-slate-400" />
                           Rename title
@@ -155,11 +204,12 @@ export default function Sidebar({ conversations }: SidebarProps) {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            setActiveMenuId(
-                              null,
-                            ); /* TODO: Trigger Delete Logic */
+                            setActiveMenuId(null);
+
+                            setConvoIdToDelete(convo.conversationId);
+                            setIsDeleteModalOpen(true);
                           }}
-                          className="w-full flex items-center gap-2.5 px-3 py-2 text-left text-xs font-medium text-rose-400 hover:bg-rose-950/30 hover:text-rose-300 transition-colors"
+                          className="w-full flex items-center gap-2.5 px-3 py-2 text-left text-xs font-medium text-rose-400 hover:bg-rose-950/30 hover:text-rose-300 transition-colors cursor-pointer"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                           Delete chat
@@ -167,6 +217,48 @@ export default function Sidebar({ conversations }: SidebarProps) {
                       </div>
                     )}
                   </div>
+
+                  {isDeleteModalOpen && (
+                    <div className="fixed inset-0 z-[100] flex items-center justify-center ">
+                      {/* Modal Card Backdrop */}
+                      <div className="bg-[#1e1e20] border border-slate-800 rounded-2xl max-w-sm w-full p-6 shadow-2xl space-y-4 animate-in zoom-in-95 duration-150">
+                        <div className="flex items-center gap-3 text-rose-400">
+                          <div className="p-2.5 bg-rose-950/40 rounded-xl border border-rose-900/30">
+                            <AlertTriangle className="w-5 h-5" />
+                          </div>
+                          <h3 className="text-base font-bold text-slate-200">
+                            Delete conversation?
+                          </h3>
+                        </div>
+
+                        <p className="text-sm text-slate-400 leading-relaxed">
+                          This action is permanent. All historical messages and
+                          routing parameters locked to this conversation
+                          timeline will be cleared from your database disk.
+                        </p>
+
+                        <div className="flex items-center justify-end gap-2.5 pt-2">
+                          <button
+                            disabled={isDeleting}
+                            onClick={() => {
+                              setIsDeleteModalOpen(false);
+                              setConvoIdToDelete(null);
+                            }}
+                            className="px-4 py-2 rounded-xl text-xs font-semibold bg-transparent hover:bg-[#2c2d30] text-slate-300 transition-colors cursor-pointer"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            disabled={isDeleting}
+                            onClick={executeDeleteAction}
+                            className="px-4 py-2 rounded-xl text-xs font-semibold bg-rose-600 hover:bg-rose-500 disabled:opacity-40 text-white transition-colors shadow-md shadow-rose-950/20 cursor-pointer"
+                          >
+                            {isDeleting ? "Deleting..." : "Confirm Delete"}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               );
             })}
