@@ -7,9 +7,13 @@ import { Toaster } from "react-hot-toast";
 
 // Pages
 import LoginPage from "./pages/LoginPage";
-import Dashboard from "./pages/Dashboard";
 import RegisterPage from "./pages/Register";
 import ResetPassword from "./pages/ResetPassword";
+import SearchPage from "./components/views/SearchPage";
+import DashboardLayout from "./layout/DashboardLayout";
+import DashboardHome from "./components/views/DashboardHome";
+import ChatWindow from "././components/views/Chatwindow";
+// import SearchPage from "./layout/SearchPage";
 
 const App: React.FC = () => {
   return (
@@ -34,9 +38,12 @@ const App: React.FC = () => {
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/chat/:conversationId" element={<Dashboard />} />
-          {/* Add more protected pages like /history or /profile here later */}
+          <Route element={<DashboardLayout />}>
+            <Route index element={<DashboardHome />} />
+            <Route path="/new" element={<DashboardHome />} />
+            <Route path="/chat/:conversationId" element={<ChatWindow />} />
+            <Route path="/dashboard/search" element={<SearchPage />} />
+          </Route>
         </Route>
 
         {/* Catch-all: Redirect to dashboard if logged in, or login if not */}

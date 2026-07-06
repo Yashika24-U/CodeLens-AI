@@ -55,33 +55,17 @@ export default function Sidebar({
     setIsDeleting(true);
 
     try {
-      
       // 1. Pass down the HTTP line to our backend route handler with our security credentials
-      let resp = await axios.delete(
-        `${backendUrl}/api/conversation/${convoIdToDelete}`,
-        {
-          withCredentials: true,
-        },
-      );
+      await axios.delete(`${backendUrl}/api/conversation/${convoIdToDelete}`, {
+        withCredentials: true,
+      });
       refreshList();
-
-  
-      // 2. Optimistic UI Update: Filter out the deleted chat from the local state list immediately
-      setConversation((prev) =>
-        prev.filter((c) => c.conversationId !== convoIdToDelete),
-      );
-
-      // 🛡️ Senior Edge Case Guard: If the user just deleted the conversation they are currently viewing, redirect them back to the dashboard blank slate!
-      if (currentChatId === convoIdToDelete) {
-        navigate("/dashboard", { replace: true });
-      }
 
       // 3. Close out the confirmation modal framework safely
       setIsDeleteModalOpen(false);
       setConvoIdToDelete(null);
     } catch (error) {
-
-      console.log('%c⧭', 'color: #f200e2', error);
+      console.log("%c⧭", "color: #f200e2", error);
     } finally {
       setIsDeleting(false);
     }
@@ -93,14 +77,17 @@ export default function Sidebar({
         {/* ➕ ACTION CONTROLS SECTION */}
         <div className="space-y-1">
           <button
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate("/")}
             className="flex items-center gap-3 px-4 py-2 rounded-full text-sm font-medium bg-[#1a1a1c] hover:bg-[#202124] transition-colors duration-150 text-indigo-400 group border border-slate-800/60 cursor-pointer"
           >
             <Plus className="w-4 h-4 text-indigo-400 transition-transform group-hover:rotate-90" />
             <span>New chat</span>
           </button>
 
-          <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-[#202124] hover:text-slate-200 transition-colors cursor-pointer">
+          <button
+            onClick={() => navigate("/dashboard/search")}
+            className="w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-[#202124] hover:text-slate-200 transition-colors cursor-pointer"
+          >
             <Search className="w-4 h-4 text-slate-500" />
             <span>Search chats</span>
           </button>

@@ -53,8 +53,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     checkAuth();
   }, []);
 
-  
-
   const login = async (
     email: string,
     password: string,

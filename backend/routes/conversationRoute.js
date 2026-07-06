@@ -8,7 +8,12 @@ const {
   deleteConversation,
 } = require("../controllers/conversations/deleteConversationList");
 
+const {
+  handleSearchConversations,
+} = require("../controllers/conversations/handleSearchConversations");
+
 router.get("/list", getConversationList);
 router.delete("/:conversationId", deleteConversation);
+router.get("/handleSearchConversations", handleSearchConversations);
 
 module.exports = router;

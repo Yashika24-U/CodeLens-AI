@@ -184,14 +184,11 @@ const trainingData = [
 
 async function seedSystem() {
   try {
-    console.log("Connected to database. Loading embedding engine...");
-
     // Load the local embedding pipeline
     const extractor = await pipeline(
       "feature-extraction",
       "Xenova/all-MiniLM-L6-v2",
     );
-    console.log("Embedding engine ready. Vectorizing and seeding records...");
 
     // Clear existing training dataset so you can rerun this script safely to update it
     await db.sequelize.query("TRUNCATE TABLE router_dataset;");

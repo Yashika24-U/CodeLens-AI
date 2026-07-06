@@ -19,7 +19,6 @@ exports.logApiTransaction = async ({
 }) => {
   try {
     const currentModel = MODEL_PRICING[selectedModel];
-    console.log("%c⧭currModel:", "color: #cc0036", currentModel);
     const o1model = MODEL_PRICING["o1-mini"];
     if (!currentModel) {
       console.error(`Pricing rules not found for model: ${selectedModel}`);

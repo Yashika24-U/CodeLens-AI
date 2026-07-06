@@ -33,8 +33,6 @@ export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  console.log("%c⧭ login from useAuth", "color: #1d3f73", { login });
-
   // ── React Hook Form setup ──────────────────────────────────────────────────
   const {
     register,
@@ -54,8 +52,6 @@ export default function LoginPage() {
     await new Promise((r) => setTimeout(r, 1500)); // simulated network delay
     try {
       const resp = await login(data.email, data.password);
-
-      console.log("%c⧭Login response", "color: #408059", resp);
 
       // 2. Cast it using your existing type interface cleanly
       const typedResp = resp as LoginResponse;

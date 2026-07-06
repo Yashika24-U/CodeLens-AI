@@ -57,15 +57,6 @@ exports.handleUserPrompt = async (req, res) => {
     );
 
     const endTime = performance.now();
-
-    // await ChatMessage.create({
-    //   id: crypto.randomUUID(),
-    //   conversationId: finalConversationId,
-    //   sender: "model",
-    //   text: aiResponseText,
-    // });
-=
-
     try {
       const savedMessage = await ChatMessage.create({
         id: crypto.randomUUID(),
@@ -138,7 +129,6 @@ exports.getUserConversation = async (req, res) => {
       },
     });
     res.status(200).json({ success: true, response: response });
-    // console.log("%c⧭ress", "color: #364cd9", response);
   } catch (error) {
     console.log("%c⧭error", "color: #ffa280", error);
     return res
