@@ -36,7 +36,7 @@ export const ConversationProvider = ({ children }) => {
     };
   }, [fetchConversationsList]);
 
-  console.log("%c⧭conversation", "color: #33cc99", conversations);
+  
 
   return (
     // 🎯 We expose BOTH the state and the updater function to the app!

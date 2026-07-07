@@ -18,7 +18,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = () => {
 
   // 1. Not logged in? Send to login
   if (!user) {
-    console.log("%c%s***", "color: #cc0088");
     return <Navigate to="/login" replace />;
   }
   // 2. Authorized! Render child components
