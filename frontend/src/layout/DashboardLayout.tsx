@@ -1,31 +1,12 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useEffect, useContext } from "react";
 import { Outlet } from "react-router-dom";
 import Sidebar from "../components/views/Sidebar";
+import { ConversationContext } from "../context/ConversationContext";
 
 export default function DashboardLayout() {
-  const [conversations, setConversations] = useState<any[]>([]);
-
-  const backendUrl =
-    import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
-
-  const fetchConversationsList = async () => {
-    try {
-      const res = await axios.get(`${backendUrl}/api/conversation/list`);
-      setConversations(res.data.data);
-    } catch (err) {
-      console.error("Error fetching sidebar list:", err);
-    }
-  };
-
+  const { fetchConversationsList } = useContext(ConversationContext);
   useEffect(() => {
     fetchConversationsList();
-    const handleSyncSignal = () => fetchConversationsList();
-    window.addEventListener("newChatCreated", handleSyncSignal);
-
-    return () => {
-      window.removeEventListener("newChatCreated", handleSyncSignal);
-    };
   }, []);
 
   return (
@@ -37,11 +18,7 @@ export default function DashboardLayout() {
             <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 px-2">
               LOGO
             </h3>
-            <Sidebar
-              conversations={conversations}
-              setConversation={setConversations}
-              refreshList={fetchConversationsList}
-            />
+            <Sidebar />
           </div>
         </div>
         <div className="border-t border-slate-800 pt-4">

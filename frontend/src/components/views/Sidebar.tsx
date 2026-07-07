@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
@@ -13,6 +13,7 @@ import {
   MoreVertical,
   AlertTriangle,
 } from "lucide-react";
+import { ConversationContext } from "../../context/ConversationContext";
 
 interface Conversation {
   conversationId: string;
@@ -25,11 +26,7 @@ interface SidebarProps {
   refreshList: () => Promise<void>;
 }
 
-export default function Sidebar({
-  conversations,
-  setConversation,
-  refreshList,
-}: SidebarProps) {
+export default function Sidebar() {
   const [activeMenuId, setActiveMenuId] = useState<string | null>(null);
   const { conversationId: currentChatId } = useParams<{
     conversationId: string;
@@ -39,6 +36,8 @@ export default function Sidebar({
   const [isDeleting, setIsDeleting] = useState(false);
   const navigate = useNavigate();
   const menuRef = useRef<HTMLDivElement | null>(null);
+  const { conversations, fetchConversationsList } =
+    useContext(ConversationContext);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -59,7 +58,7 @@ export default function Sidebar({
       await axios.delete(`${backendUrl}/api/conversation/${convoIdToDelete}`, {
         withCredentials: true,
       });
-      refreshList();
+      fetchConversationsList();
 
       // 3. Close out the confirmation modal framework safely
       setIsDeleteModalOpen(false);

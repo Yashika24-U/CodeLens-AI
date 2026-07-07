@@ -12,7 +12,8 @@ import ResetPassword from "./pages/ResetPassword";
 import SearchPage from "./components/views/SearchPage";
 import DashboardLayout from "./layout/DashboardLayout";
 import DashboardHome from "./components/views/DashboardHome";
-import ChatWindow from "././components/views/Chatwindow";
+import ChatWindow from "./components/views/ChatWindow";
+import { ConversationProvider } from "./context/ConversationContext";
 // import SearchPage from "./layout/SearchPage";
 
 const App: React.FC = () => {
@@ -38,7 +39,13 @@ const App: React.FC = () => {
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>
-          <Route element={<DashboardLayout />}>
+          <Route
+            element={
+              <ConversationProvider>
+                <DashboardLayout />
+              </ConversationProvider>
+            }
+          >
             <Route index element={<DashboardHome />} />
             <Route path="/new" element={<DashboardHome />} />
             <Route path="/chat/:conversationId" element={<ChatWindow />} />

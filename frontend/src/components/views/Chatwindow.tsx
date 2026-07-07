@@ -5,12 +5,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
 
 export default function ChatWindow() {
-  const [conversations, setConversations] = useState<any[]>([]);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [aiResponse, setaiResponse] = useState("");
-  const { user } = useAuth();
   const { conversationId } = useParams();
   const navigate = useNavigate();
   const messagesEndRef = useRef(null);
@@ -21,35 +19,9 @@ export default function ChatWindow() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const fetchConversationsList = async () => {
-    try {
-      const res = await axios.get(`${backendUrl}/api/conversation/list`);
-      setConversations(res.data.data);
-    } catch (err) {
-      console.error("Error fetching sidebar list:", err);
-    }
-  };
-
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-
-  // Sidebar Conversation List
-  useEffect(() => {
-    fetchConversationsList();
-
-    const handleSyncSignal = () => {
-      fetchConversationsList();
-    };
-
-    window.addEventListener("newChatCreated", handleSyncSignal);
-
-    return () => {
-      window.removeEventListener("newChatCreated", handleSyncSignal);
-    };
-  }, []);
-
-  // Fetch Chat messages
 
   useEffect(() => {
     // Prevents race conditions from fast context switching
@@ -127,13 +99,14 @@ export default function ChatWindow() {
 
       setMessages((prev) => [...prev, finalModelMessage]);
 
-      if (!conversationId && returnedConvoId) {
-        navigate(`/chat/${returnedConvoId}`, { replace: true });
-        const syncEvent = new CustomEvent("newChatCreated", {
-          detail: returnedConvoId,
-        });
-        window.dispatchEvent(syncEvent);
-      }
+      // if (!conversationId && returnedConvoId) {
+      //   console.log("%c⧭ inside newpage", "color: #364cd9");
+      //   navigate(`/chat/${returnedConvoId}`, { replace: true });
+      //   const syncEvent = new CustomEvent("newChatCreated", {
+      //     detail: returnedConvoId,
+      //   });
+      //   window.dispatchEvent(syncEvent);
+      // }
     } catch (error) {
       console.error("Routing transmission failure:", error);
     } finally {
