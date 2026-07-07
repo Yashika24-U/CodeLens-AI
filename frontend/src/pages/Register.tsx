@@ -119,7 +119,7 @@ export default function RegisterPage() {
           <h1 className="text-2xl font-bold text-slate-200 mb-1">
             Create your account
           </h1>
-          <p className="text-slate-400 text-sm">
+          <p className="#f1f5f9 text-sm">
             A place where high-quality prompts and code are engineered
           </p>
         </div>
@@ -224,7 +224,7 @@ export default function RegisterPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500
+                className="absolute right-3 top-1/2 -translate-y-1/2 #f1f5f9
                            hover:text-slate-300 transition-colors cursor-pointer"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
@@ -299,7 +299,7 @@ export default function RegisterPage() {
               <button
                 type="button"
                 onClick={() => setShowConfirm((v) => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500
+                className="absolute right-3 top-1/2 -translate-y-1/2 #f1f5f9
                            hover:text-slate-300 transition-colors cursor-pointer"
                 aria-label={showConfirm ? "Hide password" : "Show password"}
               >
@@ -372,10 +372,7 @@ export default function RegisterPage() {
               )}
             </button>
 
-            <span
-              id="terms-label"
-              className="text-xs text-slate-400 leading-relaxed"
-            >
+            <span id="terms-label" className="text-xs #f1f5f9 leading-relaxed">
               I agree to the{" "}
               <a href="/terms" className="text-gemini-cyan hover:underline">
                 Terms of Service
@@ -403,7 +400,7 @@ export default function RegisterPage() {
         </form>
 
         {/* ── Footer link ──────────────────────────────────────────────── */}
-        <p className="text-center text-slate-500 text-sm mt-6">
+        <p className="text-center #f1f5f9 text-sm mt-6">
           Already have an account?{" "}
           {/*
             Replace this <a> with your router's <Link to="/login"> or

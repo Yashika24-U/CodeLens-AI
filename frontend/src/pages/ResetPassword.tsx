@@ -27,7 +27,6 @@ export default function ResetPasswordPage() {
 
   // 1. Grab token cleanly at the top level of your component hook cycle
   const token = searchParams.get("token");
- 
 
   // ── React Hook Form Setup ──────────────────────────────────────────────────
   const {
@@ -64,11 +63,8 @@ export default function ResetPasswordPage() {
       const backendUrl =
         import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
-     
-
       // Match backend payload naming conventions safely
 
-     
       await axios.put(`${backendUrl}/api/auth/reset-password`, {
         token,
         newPassword: data.password,
@@ -77,7 +73,6 @@ export default function ResetPasswordPage() {
       toast.success("Password updated successfully!");
       navigate("/login");
     } catch (error) {
-     
       let errorMessage = "Failed to update password. Link might be invalid.";
 
       if (axios.isAxiosError(error)) {
@@ -103,7 +98,7 @@ export default function ResetPasswordPage() {
           <h1 className="text-2xl font-bold text-slate-200 mb-1">
             Reset your password
           </h1>
-          <p className="text-slate-400 text-sm">
+          <p className="#f1f5f9 text-sm">
             Please engineer a secure, strong password to lock your profile.
           </p>
         </div>
@@ -136,7 +131,7 @@ export default function ResetPasswordPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors cursor-pointer"
+                className="absolute right-3 top-1/2 -translate-y-1/2 #f1f5f9 hover:text-slate-300 transition-colors cursor-pointer"
               >
                 <EyeIcon open={showPassword} />
               </button>
@@ -146,7 +141,7 @@ export default function ResetPasswordPage() {
             {watchedPassword && (
               <div className="mt-2.5">
                 <div className="flex items-center justify-between text-xs mb-1">
-                  <span className="text-slate-500">Password strength:</span>
+                  <span className="#f1f5f9">Password strength:</span>
                   <span className={`${strength.textColor} font-semibold`}>
                     {strength.label}
                   </span>
@@ -187,7 +182,7 @@ export default function ResetPasswordPage() {
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword((v) => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition-colors cursor-pointer"
+                className="absolute right-3 top-1/2 -translate-y-1/2 #f1f5f9 hover:text-slate-300 transition-colors cursor-pointer"
               >
                 <EyeIcon open={showConfirmPassword} />
               </button>

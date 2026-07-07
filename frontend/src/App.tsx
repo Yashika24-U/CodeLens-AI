@@ -47,7 +47,7 @@ const App: React.FC = () => {
             }
           >
             <Route index element={<DashboardHome />} />
-            <Route path="/new" element={<DashboardHome />} />
+            <Route path="/home" element={<DashboardHome />} />
             <Route path="/chat/:conversationId" element={<ChatWindow />} />
             <Route path="/dashboard/search" element={<SearchPage />} />
           </Route>

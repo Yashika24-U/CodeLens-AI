@@ -85,7 +85,7 @@ export const inputBase =
   "placeholder:text-slate-600 transition-all duration-200";
 
 export const labelBase =
-  "block text-xs uppercase tracking-widest text-slate-400 font-medium";
+  "block text-xs uppercase tracking-widest #f1f5f9 font-medium";
 
 // ── Reusable UI Components ────────────────────────────────────────────────────
 
@@ -264,7 +264,7 @@ export function CheckItem({ met, text }: { met: boolean; text: string }) {
   return (
     <div
       className={`flex items-center gap-2 text-xs transition-colors duration-200
-      ${met ? "text-emerald-400" : "text-slate-500"}`}
+      ${met ? "text-emerald-400" : "#f1f5f9"}`}
     >
       <span
         className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center shrink-0

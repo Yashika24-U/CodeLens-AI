@@ -113,7 +113,7 @@ export default function LoginPage() {
           <h1 className="text-2xl font-bold text-slate-200 mb-1">
             Welcome back
           </h1>
-          <p className="text-slate-400 text-sm">
+          <p className="#f1f5f9 text-sm">
             A place where high-quality prompts and code are engineered
           </p>
         </div>
@@ -190,7 +190,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword((v) => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500
+                className="absolute right-3 top-1/2 -translate-y-1/2 #f1f5f9
                            hover:text-slate-300 transition-colors cursor-pointer"
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
@@ -214,7 +214,7 @@ export default function LoginPage() {
         </form>
 
         {/* ── Footer link ──────────────────────────────────────────────── */}
-        <p className="text-center text-slate-500 text-sm mt-6">
+        <p className="text-center #f1f5f9 text-sm mt-6">
           No account yet?
           {/*
             Replace this <a> with your router's <Link to="/register"> or

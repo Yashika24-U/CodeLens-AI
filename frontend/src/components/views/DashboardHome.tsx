@@ -10,7 +10,6 @@ export const DashboardHome: React.FC<DashboardHomeProps> = ({}) => {
   const [greeting, setGreeting] = useState("");
   const { user } = useAuth();
   const userName = user?.username;
-  
 
   useEffect(() => {
     const getDynamicGreeting = (): string => {
@@ -41,28 +40,48 @@ export const DashboardHome: React.FC<DashboardHomeProps> = ({}) => {
   }, [userName]);
 
   return (
-    <div className="relative flex flex-col items-center justify-start min-h-screen bg-[#0d142e] text-[#f8fafc] px-4 pt-[30vh]  select-none overflow-hidden">
-      {/* 🔮 Cool Premium Glow Effect */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(30,41,59,0.5)_0%,transparent_60%)] pointer-events-none" />
+    // 🎨 Theme: Base Background shifted to Soho Dark Slate (#0b0c0c)
+    <div className="relative flex flex-col items-center justify-start min-h-screen bg-[#0b0c0c] text-[#f8fafc] px-4 pt-[30vh] select-none overflow-hidden">
+      {/* 🔮 Soho Accent Glow Layer instead of slate-blue */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,182,96,0.06)_0%,transparent_65%)] pointer-events-none" />
 
       <div className="relative z-10 w-full max-w-2xl flex flex-col items-center">
-        {/* 🌟 Short, Crisp Greeting Text */}
-        <h1 className="text-3xl font-medium tracking-tight text-center mb-8 bg-gradient-to-b from-slate-50 to-slate-400 bg-clip-text text-transparent drop-shadow-sm">
-          {greeting}
-        </h1>
+        {/* 🌟 Soho Home Premium Greeting Block */}
+        <div className="flex flex-col items-center justify-center gap-2 mb-10 select-none">
+          {/* Elegant Sparkle Icon Accent using your Soho Green */}
+          <div className="flex items-center justify-center gap-2">
+            <svg
+              viewBox="0 0 24 24"
+              className="w-5 h-5 fill-[#00b660] animate-pulse opacity-90"
+              aria-hidden="true"
+            >
+              <path d="M12 2l2.4 7.2 7.2 2.4-7.2 2.4-2.4 7.2-2.4-7.2-7.2-2.4 7.2-2.4z" />
+            </svg>
 
-        {/* 🔍 Premium Input Bar Container */}
-        <div className="w-full bg-[#141418]/90 backdrop-blur-md border border-white/10 rounded-full pl-6 pr-3 py-3 flex items-center gap-4 shadow-[0_0_50px_-12px_rgba(0,0,0,0.7)] focus-within:border-white/20 focus-within:shadow-[0_0_50px_-12px_rgba(255,255,255,0.02)] transition-all duration-300">
-          <Search size={20} className="text-slate-500 shrink-0" />
+            {/* Subtitle Line */}
+            <span className="text-xs font-semibold uppercase tracking-widest #f1f5f9">
+              Workspace Home
+            </span>
+          </div>
+          {/* Premium Editorial Greeting Text */}
+          <h1 className="text-4xl font-normal tracking-tight text-center font-serif text-[#f1f5f9] drop-shadow-md">
+            {greeting}
+          </h1>
+        </div>
+
+        {/* 🔍 Soho Custom Input Bar Capsule */}
+        <div className="w-full bg-[#1e2129] border border-[#2e333f] rounded-full pl-6 pr-3 py-3 flex items-center gap-4 shadow-xl focus-within:border-[#00b660]/60 transition-all duration-300">
+          {/* Green Search Icon to accent the focus flow */}
+          <Search size={20} className="text-[#00b660] shrink-0" />
 
           <input
             type="text"
             placeholder="Ask code reviewer anything..."
-            className="bg-transparent flex-1 outline-none text-base text-slate-100 placeholder-slate-500 w-full font-normal"
+            className="bg-transparent flex-1 outline-none text-base text-gray-200 placeholder-gray-500 w-full font-normal"
           />
 
-          {/* ⚡ Send Button (Replaced Mic) */}
-          <button className="bg-slate-100 text-slate-900 hover:bg-white p-2.5 rounded-full transition-all duration-200 active:scale-95 shadow-md flex items-center justify-center shrink-0">
+          {/* ⚡ Soho Branded Send Action Button Control */}
+          <button className="bg-[#00b660] text-white hover:bg-[#00a354] p-2.5 rounded-full transition-all duration-200 active:scale-95 shadow-md flex items-center justify-center shrink-0 cursor-pointer">
             <ArrowUp size={18} strokeWidth={2.5} />
           </button>
         </div>

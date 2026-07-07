@@ -134,12 +134,12 @@ export default function ChatWindow() {
             </div>
 
             {msg.sender === "model" && msg.routedModel && (
-              <div className="mt-1.5 flex items-center gap-2 text-[11px] font-medium text-slate-400 px-1">
-                <span className="flex items-center gap-1 bg-slate-950 px-2 py-0.5 rounded border border-slate-800 text-indigo-400 font-mono">
+              <div className="mt-1.5 flex items-center gap-2 text-[11px] font-medium #f1f5f9 px-1">
+                <span className="flex items-center gap-1 bg-slate-950 px-2 py-0.5 rounded border border-slate-800 #00b660 font-mono">
                   🤖 {msg.routedModel}
                 </span>
                 {msg.confidence && (
-                  <span className="text-slate-500">
+                  <span className="#f1f5f9">
                     Confidence Score:{" "}
                     <span className="text-emerald-500 font-semibold">
                       {(msg.confidence * 100).toFixed(1)}%
@@ -151,13 +151,11 @@ export default function ChatWindow() {
           </div>
         ))}
         {loading && (
-          <div className="flex items-center gap-2 text-sm text-slate-400 font-medium">
+          <div className="flex items-center gap-2 text-sm #f1f5f9 font-medium">
             <div className="w-2 h-2 rounded-full bg-indigo-500 animate-bounce"></div>
             <div className="w-2 h-2 rounded-full bg-indigo-500 animate-bounce [animation-delay:0.2s]"></div>
             <div className="w-2 h-2 rounded-full bg-indigo-500 animate-bounce [animation-delay:0.4s]"></div>
-            <span className="text-xs text-slate-500 italic pl-1">
-              Thinking...
-            </span>
+            <span className="text-xs #f1f5f9 italic pl-1">Thinking...</span>
           </div>
         )}
         <div ref={messagesEndRef} />
