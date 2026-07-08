@@ -374,11 +374,11 @@ export default function RegisterPage() {
 
             <span id="terms-label" className="text-xs #f1f5f9 leading-relaxed">
               I agree to the{" "}
-              <a href="/terms" className="text-gemini-cyan hover:underline">
+              <a href="/terms" className="text-[#00B660] hover:underline">
                 Terms of Service
               </a>{" "}
               and{" "}
-              <a href="/privacy" className="text-gemini-cyan hover:underline">
+              <a href="/privacy" className="text-[#00B660] hover:underline">
                 Privacy Policy
               </a>
               .
@@ -408,7 +408,7 @@ export default function RegisterPage() {
           */}
           <a
             href="/login"
-            className="text-gemini-cyan hover:underline font-medium transition-colors"
+            className="text-[#00B660] hover:underline font-medium transition-colors"
           >
             Sign in
           </a>

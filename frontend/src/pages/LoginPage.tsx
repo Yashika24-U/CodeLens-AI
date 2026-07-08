@@ -165,7 +165,7 @@ export default function LoginPage() {
               </label>
               <button
                 type="button"
-                className="text-xs text-gemini-cyan hover:underline transition-colors cursor-pointer"
+                className="text-xs text-[#00B660] hover:underline transition-colors cursor-pointer"
                 onClick={handleForgotPasswordSubmit}
               >
                 Forgot password?
@@ -222,7 +222,7 @@ export default function LoginPage() {
           */}
           <a
             href="/register"
-            className="text-gemini-cyan hover:underline font-medium transition-colors"
+            className="text-[#00B660] hover:underline font-medium transition-colors"
           >
             Create one
           </a>

@@ -75,7 +75,7 @@ export default function DashboardLayout() {
                           Nova AI
                         </span>
                         <span className="text-[10px] font-semibold text-[#00b660] tracking-wider uppercase opacity-80 mt-0.5">
-                          Console Engine
+                          CODE PARTNER
                         </span>
                       </div>
                     </div>

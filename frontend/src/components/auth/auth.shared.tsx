@@ -93,56 +93,52 @@ export const labelBase =
 export function BrandRow() {
   return (
     <div className="flex items-center gap-2.5 mb-6">
-      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-gemini-blue to-gemini-cyan flex items-center justify-center shrink-0">
-        <svg
-          width="15"
-          height="15"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="white"
-          strokeWidth="2.5"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <polyline points="16 18 22 12 16 6" />
-          <polyline points="8 6 2 12 8 18" />
-        </svg>
-      </div>
-      <span className="text-slate-200 font-bold text-lg tracking-tight">
-        PromptForge
+      {/* SVG */}
+      <svg
+        viewBox="0 0 24 24"
+        className="w-5 h-5 fill-[#00b660] cursor-pointer"
+        aria-hidden="true"
+      >
+        <path d="M12 2l2.4 7.2 7.2 2.4-7.2 2.4-2.4 7.2-2.4-7.2-7.2-2.4 7.2-2.4z" />
+      </svg>
+      <span className="text-[#00b660] font-bold text-lg tracking-tight">
+        Nova AI
       </span>
     </div>
   );
 }
 
 /** Full-screen cyber background: ambient glows + dot grid */
+
 export function BackgroundGlow() {
   return (
     <div
-      className="pointer-events-none fixed inset-0 overflow-hidden"
+      className="pointer-events-none fixed inset-0 overflow-hidden bg-[#0b0c0c]"
       aria-hidden="true"
     >
       <div
-        className="absolute -top-40 -left-40 w-96 h-96 rounded-full opacity-20"
+        className="absolute -top-40 -left-40 w-[30rem] h-[30rem] rounded-full opacity-15 mix-blend-screen"
         style={{
-          background: "radial-gradient(circle, #3b82f6 0%, transparent 70%)",
-          filter: "blur(60px)",
+          background: "radial-gradient(circle, #00B660 0%, transparent 70%)",
+          filter: "blur(80px)",
         }}
       />
+
       <div
-        className="absolute -bottom-40 -right-20 w-80 h-80 rounded-full opacity-15"
+        className="absolute -bottom-40 -right-20 w-[25rem] h-[25rem] rounded-full opacity-10 mix-blend-screen"
         style={{
-          background: "radial-gradient(circle, #22d3ee 0%, transparent 70%)",
-          filter: "blur(60px)",
+          background: "radial-gradient(circle, #008A47 0%, transparent 70%)",
+          filter: "blur(80px)",
         }}
       />
+
       <div
-        className="absolute inset-0 opacity-[0.025]"
+        className="absolute inset-0 bg-[linear-gradient(rgba(0,182,96,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(0,182,96,0.05)_1px,transparent_1px)] bg-[size:56px_56px]"
         style={{
-          backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.4) 1px, transparent 1px)," +
-            "linear-gradient(90deg, rgba(255,255,255,0.4) 1px, transparent 1px)",
-          backgroundSize: "56px 56px",
+          maskImage:
+            "radial-gradient(circle at center, white 30%, transparent 90%)",
+          WebkitMaskImage:
+            "radial-gradient(circle at center, white 30%, transparent 90%)",
         }}
       />
     </div>
@@ -228,10 +224,11 @@ export function SubmitButton({
     <button
       type="submit"
       disabled={loading || disabled}
-      className="w-full bg-gradient-to-r from-gemini-blue to-gemini-cyan text-white font-semibold
-                 rounded-lg px-4 py-3 text-sm hover:opacity-90 transition-all duration-200
-                 disabled:opacity-40 disabled:cursor-not-allowed
-                 flex items-center justify-center gap-2 mt-2 cursor-pointer"
+      className="w-full bg-gradient-to-r from-[#43aa7a] to-[#109454] text-white font-semibold
+           rounded-lg px-4 py-3 text-sm hover:opacity-95 hover:shadow-[0_0_20px_rgba(0,182,96,0.25)] 
+           transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed
+           disabled:bg-none disabled:bg-slate-700
+           flex items-center justify-center gap-2 mt-2 cursor-pointer"
     >
       {loading ? (
         <>
