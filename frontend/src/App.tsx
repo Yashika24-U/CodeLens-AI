@@ -54,7 +54,7 @@ const App: React.FC = () => {
         </Route>
 
         {/* Catch-all: Redirect to dashboard if logged in, or login if not */}
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );
