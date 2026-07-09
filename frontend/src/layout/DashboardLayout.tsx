@@ -15,8 +15,8 @@ export default function DashboardLayout() {
     // 🎨 Theme: Parent wrapper base changed to Soho Dark Slate (#0b0c0c)
     <div className="flex h-screen bg-[#0b0c0c] text-[#f3f4f6] font-sans overflow-hidden">
       <aside
-        className={` border-[#2e333f]/60 flex flex-col justify-between transition-all duration-300 ease-in-out ${
-          isCollapsed ? "w-16 px-2" : "border-r w-64 px-4"
+        className={`bg-[#121316]/40 backdrop-blur-md flex flex-col justify-between transition-all duration-300 ease-in-out shadow-[4px_0_24px_rgba(0,0,0,0.25)] ${
+          isCollapsed ? "w-16 px-2" : "w-64 px-4"
         }`}
       >
         <div className="space-y-4">
