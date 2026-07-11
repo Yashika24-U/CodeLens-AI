@@ -14,6 +14,7 @@ import DashboardLayout from "./layout/DashboardLayout";
 import DashboardHome from "./components/views/DashboardHome";
 import ChatWindow from "./components/views/ChatWindow";
 import { ConversationProvider } from "./context/ConversationContext";
+import WaitingRoom from "./components/views/WaitingRoom";
 // import SearchPage from "./layout/SearchPage";
 
 const App: React.FC = () => {
@@ -50,6 +51,7 @@ const App: React.FC = () => {
             <Route path="/home" element={<DashboardHome />} />
             <Route path="/chat/:conversationId" element={<ChatWindow />} />
             <Route path="/dashboard/search" element={<SearchPage />} />
+            <Route path="/chat/room" element={<WaitingRoom />} />
           </Route>
         </Route>
 

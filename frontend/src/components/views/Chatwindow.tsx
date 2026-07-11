@@ -1,16 +1,19 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { useAuth } from "../../context/useAuth";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import WaitingRoom from "./WaitingRoom";
 
 export default function ChatWindow() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [aiResponse, setaiResponse] = useState("");
-  const { conversationId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { conversationId } = useParams();
+
+  console.log("%c⧭ conversationId", "color: #99614d", conversationId);
   const messagesEndRef = useRef(null);
   const backendUrl =
     import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
@@ -19,100 +22,88 @@ export default function ChatWindow() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const isTeamSyncRoom = conversationId?.startsWith("room-");
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
+  console.log("%c⧭location", "color: #d0bfff", location);
+
   useEffect(() => {
-    // Prevents race conditions from fast context switching
-    let isMounted = true;
+    if (conversationId === "new" && location.state?.initialPrompt) {
+      const capturedPrompt = location.state.initialPrompt;
 
-    const fetchChatMessages = async () => {
-      if (!conversationId) {
-        setMessages([]);
-        return;
-      }
+      console.log("%c⧭ capturedPrompt", "color: #cc0036", capturedPrompt);
 
-      try {
-        const response = await axios.get(
-          `${backendUrl}/api/chat/conversations/${conversationId}/messages`,
-          { withCredentials: true }, // Pass secure HTTP-Only cookies to authorize the request
-        );
+      // Clear out the history context state tracking so back-buttons don't re-trigger it
+      navigate(location.pathname, { replace: true, state: {} });
 
-        if (response.data.success && isMounted) {
-          setMessages(response.data.response);
-        }
-      } catch (error) {
-        if (!isMounted) return;
+      // Execute your core dispatch function immediately
+      sendWorkspacePrompt(capturedPrompt);
+    }
+  }, [conversationId, location.state]);
 
-        toast.error("Unable to access requested conversation history.");
-        setMessages([]);
-        navigate("/dashboard");
-      }
-    };
+  const sendWorkspacePrompt = async (promptText) => {
+    if (!promptText.trim()) return;
 
-    fetchChatMessages();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [conversationId]);
-
-  const handleSendMessage = async (e) => {
-    e.preventDefault();
-    if (!input.trim()) return;
-
-    const userPrompt = input;
-
-    setInput("");
     setLoading(true);
-
     const temporaryUserMessage = {
       id: Date.now(),
       sender: "user",
-      text: userPrompt,
+      text: promptText,
     };
     setMessages((prev) => [...prev, temporaryUserMessage]);
 
     try {
+      const activeConvoId = conversationId === "new" ? null : conversationId;
       const response = await axios.post(
         `${backendUrl}/api/chat/handle-user-prompt`,
         {
-          conversationId: conversationId || null,
-          prompt: userPrompt,
+          conversationId: activeConvoId,
+          prompt: promptText,
         },
         { withCredentials: true },
       );
 
       const payload = response.data.data;
-      const aiReplyText = payload.reply;
-      const returnedConvoId = payload.conversationId;
-      setaiResponse(aiReplyText);
-
       const finalModelMessage = {
         id: Date.now() + 1,
         sender: "model",
-        text: aiReplyText,
+        text: payload.reply,
         routedModel: response.data.modelUsed || "gemini-2.5-flash",
         confidence: response.data.confidenceScore || 0.85,
       };
 
       setMessages((prev) => [...prev, finalModelMessage]);
 
-      // if (!conversationId && returnedConvoId) {
-      //   console.log("%c⧭ inside newpage", "color: #364cd9");
-      //   navigate(`/chat/${returnedConvoId}`, { replace: true });
-      //   const syncEvent = new CustomEvent("newChatCreated", {
-      //     detail: returnedConvoId,
-      //   });
-      //   window.dispatchEvent(syncEvent);
-      // }
+      // If this was a brand new room initialization, update the browser URL route silently
+      if (conversationId === "new" && payload.conversationId) {
+        navigate(`/chat/${payload.conversationId}`, { replace: true });
+        window.dispatchEvent(
+          new CustomEvent("newChatCreated", { detail: payload.conversationId }),
+        );
+      }
     } catch (error) {
       console.error("Routing transmission failure:", error);
+      toast.error("Transmission breakdown occurred.");
     } finally {
       setLoading(false);
     }
   };
+
+  const handleSendMessage = (e) => {
+    e.preventDefault();
+    if (!input.trim()) return;
+    const currentInput = input;
+    setInput("");
+    sendWorkspacePrompt(currentInput);
+  };  
+
+  // If it's a freshly initialized team sync room with no historical data, mount Phase 1 Control Center
+  if (isTeamSyncRoom && messages.length === 0) {
+    return <WaitingRoom roomId={conversationId} />;
+  }
 
   return (
     <>

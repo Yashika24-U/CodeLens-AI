@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
@@ -60,11 +60,36 @@ export default function Sidebar({ isCollapsed }: SidebarComponentProps) {
     }
   };
 
+  const handleInitializeTeamSync = () => {
+    const uniqueRoomId = "room-" + Math.random().toString(36).substring(2, 15);
+    // This uses React Router DOM to safely change the URL without reloading!
+    navigate(`/chat/${uniqueRoomId}`);
+  };
+
   return (
     <div className="flex flex-col h-full text-[#e3e3e3] font-sans p-0 select-none justify-between">
       <div className="space-y-6">
         {/* ➕ ACTION CONTROLS SECTION */}
         <div className="space-y-2">
+          <button
+            onClick={handleInitializeTeamSync}
+            className="flex items-center gap-3 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-emerald-500/50 text-white rounded-xl p-3 transition-all duration-200 shadow-md group w-full max-w-xs cursor-pointer"
+          >
+            {/* Dynamic Glowing Icon Accent */}
+            <div className="relative flex h-4 w-4 items-center justify-center">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+            </div>
+
+            <div className="text-left">
+              <div className="text-xs font-bold font-mono text-slate-200 group-hover:text-emerald-400 transition-colors">
+                INITIALIZE TEAM SYNC
+              </div>
+              <div className="text-[10px] text-slate-400">
+                Spawn collaborative session
+              </div>
+            </div>
+          </button>
           {/* New Chat Button */}
           <button
             onClick={() => navigate("/")}
@@ -175,7 +200,7 @@ export default function Sidebar({ isCollapsed }: SidebarComponentProps) {
                 >
                   <div className="flex items-center gap-3 truncate w-full pr-2 animate-in fade-in duration-200">
                     <MessageSquare className="w-4 h-4 text-slate-400 shrink-0" />
-                    <span className="truncate text-xs">
+                    <span className="truncate text-sm font-medium">
                       {convo.title || "Untitled Chat"}
                     </span>
                   </div>

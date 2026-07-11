@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Search, ArrowUp } from "lucide-react";
 import { useAuth } from "../../context/useAuth";
+import { useNavigate } from "react-router-dom";
 
 interface DashboardHomeProps {
   userName?: string;
@@ -8,7 +9,9 @@ interface DashboardHomeProps {
 
 export const DashboardHome: React.FC<DashboardHomeProps> = ({}) => {
   const [greeting, setGreeting] = useState("");
+  const [homeInput, setHomeInput] = useState("");
   const { user } = useAuth();
+  const navigate = useNavigate();
   const userName = user?.username;
 
   useEffect(() => {
@@ -38,6 +41,17 @@ export const DashboardHome: React.FC<DashboardHomeProps> = ({}) => {
 
     setGreeting(getDynamicGreeting());
   }, [userName]);
+
+  const handleInitialSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!homeInput.trim()) return;
+
+    // 🟢 CRITICAL ARCHITECTURE STEP:
+    // We navigate to a placeholder chat view, passing the text along inside window.history.state
+
+    console.log("%c⧭Navigatingggg", "color: #00736b");
+    navigate("/chat/new", { state: { initialPrompt: homeInput } });
+  };
 
   return (
     // 🎨 Theme: Base Background shifted to Soho Dark Slate (#0b0c0c)
@@ -69,22 +83,28 @@ export const DashboardHome: React.FC<DashboardHomeProps> = ({}) => {
           </h1>
         </div>
 
-        {/* 🔍 Soho Custom Input Bar Capsule */}
-        <div className="w-full bg-[#1e2129] border border-[#2e333f] rounded-full pl-6 pr-3 py-3 flex items-center gap-4 shadow-xl focus-within:border-[#00b660]/60 transition-all duration-300">
-          {/* Green Search Icon to accent the focus flow */}
+        <form
+          onSubmit={handleInitialSubmit}
+          className="w-full bg-[#1e2129] border border-[#2e333f] rounded-full pl-6 pr-3 py-3 flex items-center gap-4 shadow-xl focus-within:border-[#00b660]/60 transition-all duration-300"
+        >
           <Search size={20} className="text-[#00b660] shrink-0" />
 
           <input
             type="text"
+            value={homeInput}
+            onChange={(e) => setHomeInput(e.target.value)}
             placeholder="Ask code reviewer anything..."
             className="bg-transparent flex-1 outline-none text-base text-gray-200 placeholder-gray-500 w-full font-normal"
           />
 
-          {/* ⚡ Soho Branded Send Action Button Control */}
-          <button className="bg-[#00b660] text-white hover:bg-[#00a354] p-2.5 rounded-full transition-all duration-200 active:scale-95 shadow-md flex items-center justify-center shrink-0 cursor-pointer">
+          <button
+            type="submit"
+            disabled={!homeInput.trim()}
+            className="bg-[#00b660] text-white hover:bg-[#00a354] p-2.5 rounded-full transition-all duration-200 active:scale-95 shadow-md flex items-center justify-center shrink-0 cursor-pointer"
+          >
             <ArrowUp size={18} strokeWidth={2.5} />
           </button>
-        </div>
+        </form>
       </div>
     </div>
   );
